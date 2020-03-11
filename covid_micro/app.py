@@ -2,9 +2,10 @@ import csv
 import datetime
 import json
 from io import StringIO, BytesIO
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 import matplotlib
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+
 matplotlib.use('Agg')
 
 import matplotlib.pyplot
@@ -48,12 +49,12 @@ def get_latest(country):
         latest_recovered = latest_data['Recovered']
     except KeyError:
         latest_timestamp = datetime.datetime.now()
-        latest_cases=0
-        latest_deaths=0
-        latest_recovered=0
-#    latest_cases = latest_data['Confirmed']
-#    latest_deaths = latest_data['Deaths']
-#    latest_recovered = latest_data['Recovered']
+        latest_cases = 0
+        latest_deaths = 0
+        latest_recovered = 0
+    #    latest_cases = latest_data['Confirmed']
+    #    latest_deaths = latest_data['Deaths']
+    #    latest_recovered = latest_data['Recovered']
     return dict(deaths=latest_deaths, cases=latest_cases, recovered=latest_recovered, timestamp=latest_timestamp)
 
 
@@ -83,8 +84,8 @@ def get_and_fit(country):
     x = [datetime.datetime.strptime(d, '%m/%d/%y') + datetime.timedelta(days=1) for d in
          data[0][-len(country_data) + len(data[0]):]]
     mask = np.array(country_data) < 20
-    x_data = np.ma.array([(datetime.datetime.now() - a).days for a in x], mask=mask)[max(len(x)-6,0):]
-    log_y_data = np.log(np.ma.array(country_data, mask=mask))[max(len(x)-6,0):]
+    x_data = np.ma.array([(datetime.datetime.now() - a).days for a in x], mask=mask)[max(len(x) - 6, 0):]
+    log_y_data = np.log(np.ma.array(country_data, mask=mask))[max(len(x) - 6, 0):]
     curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
     return curve_fit, x, country_data
 
@@ -105,7 +106,6 @@ def index():
         HTML_COUNTRIES.format(countries="<LI>".join([f'<a href="{c}.html">{c}</a>' for c in sorted(countries)])))
 
 
-@app.route('/<country>.svg')
 def plot(country="Germany"):
     curve_fit, x, country_data = get_and_fit(country)
 
@@ -147,7 +147,15 @@ def plot(country="Germany"):
     FigureCanvas(fig)
     fig.savefig(bio, format="svg")
     matplotlib.pyplot.close(fig)
-    return Response(bio.getvalue(), mimetype='image/svg+xml')
+    return bio.getvalue()
+
+
+@app.route('/<country>.svg')
+def deliver_plot(country="Germany", cache={}):
+    if country not in cache or (datetime.datetime.now() - cache[country]['timestamp'] > datetime.timedelta(minutes=15)):
+        cache[country] = {'data': plot(country),
+                          'timestamp': datetime.datetime.now()}
+    return Response(cache[country]['data'], mimetype='image/svg+xml')
 
 
 HTML = """
