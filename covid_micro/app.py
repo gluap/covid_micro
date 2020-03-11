@@ -69,9 +69,9 @@ def get_latest(country):
         latest_recovered = latest_data['Recovered']
     except KeyError:
         latest_timestamp = datetime.datetime.now()
-        latest_cases = 0
-        latest_deaths = 0
-        latest_recovered = 0
+        latest_cases = "Upstream API timestamp missing"
+        latest_deaths = "Upstream API timestamp missing"
+        latest_recovered = "Upstream API timestamp missing"
     #    latest_cases = latest_data['Confirmed']
     #    latest_deaths = latest_data['Deaths']
     #    latest_recovered = latest_data['Recovered']
