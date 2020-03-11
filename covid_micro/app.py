@@ -17,9 +17,6 @@ matplotlib.use('Agg')
 import matplotlib.pyplot
 import numpy as np
 import requests
-from flask import Response, Flask
-
-app = Flask(__name__)
 
 
 class ExtraDataError(Exception):
@@ -121,26 +118,6 @@ def get_and_fit(country):
     return curve_fit, x, country_data
 
 
-@app.route('/<country>.html')
-def html(country="Germany"):
-    try:
-        data = predictions(country)
-    except Exception as exc:
-        logger.exception("exception when making html")
-        return Response(ERROR.format(country=country, exception=exc), mimetype="text/html")
-    return Response(HTML.format(**data), mimetype='text/html')
-
-
-@app.route('/index.html')
-def index():
-    r = requests.get(
-        "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv").content
-    data = [row for row in csv.reader(StringIO(r.decode("utf-8")))]
-    countries = set([row[1] for row in data])
-    return Response(
-        HTML_COUNTRIES.format(countries="<LI>".join([f'<a href="{c}.html">{c}</a>' for c in sorted(countries)])))
-
-
 def plot(country="Germany"):
     curve_fit, x, country_data = get_and_fit(country)
 
@@ -185,14 +162,6 @@ def plot(country="Germany"):
     return bio.getvalue()
 
 
-@app.route('/<country>.svg')
-def deliver_plot(country="Germany", cache={}):
-    if country not in cache or (datetime.datetime.now() - cache[country]['timestamp'] > datetime.timedelta(minutes=15)):
-        cache[country] = {'data': plot(country),
-                          'timestamp': datetime.datetime.now()}
-    return Response(cache[country]['data'], mimetype='image/svg+xml')
-
-
 HTML = """
 <html>
 <title>Current {country} corona statistics</title> 
@@ -200,7 +169,7 @@ HTML = """
 <h1>{country}</h1>
 <P><b>Doubling time:</b> {t2} Days<BR/>
 <b>10k infections on</b> {date10k}<BR/>
-<b>100k infections on</b> {date100k}<BR/>g
+<b>100k infections on</b> {date100k}<BR/>
 <b>1M infections on</b> {date1m}<BR/></P>
 latest: <BR/><B>cases:</B> {cases}<BR/><B>deaths:</B> {deaths}<BR/>
 <IMG SRC="{country}.svg">
