@@ -1,5 +1,5 @@
 # coding=utf-8
-from covid_mciro import __version__ as version
+from covid_micro import __version__ as version
 from setuptools import setup
 
 setup(name='covid_micro',
