@@ -1,7 +1,10 @@
 import csv
 import datetime
 import json
+import logging
 from io import StringIO, BytesIO
+
+logger = logging.getLogger(__name__)
 
 import matplotlib
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -16,22 +19,40 @@ from flask import Response, Flask
 app = Flask(__name__)
 
 
+class ExtraDataError(Exception):
+    pass
+
+
 def get_cached(url, cache={}):
     if url in cache:
         if datetime.datetime.now() - cache[url]['timestamp'] <= datetime.timedelta(minutes=15):
             return cache[url]['data']
-    cache[url] = {'data': requests.get(url),
-                  'timestamp': datetime.datetime.now()}
-    return cache[url]['data']
+    result = requests.get(url)
+    result_valid = True
+    try:
+        if json in result.url:
+            data = json.loads(result.content)
+            if 'error' in data:
+                result_valid = False
+    except:
+        pass
+    if result_valid:
+        cache[url] = {'data': result,
+                      'timestamp': datetime.datetime.now()}
+
+    return result
 
 
 def get_latest(country):
     jsondata = get_cached(
         "https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases/FeatureServer/1/query?f=json&where=(Confirmed%20%3E%200)&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=Deaths%20desc%2CCountry_Region%20asc%2CProvince_State%20asc&resultOffset=0&resultRecordCount=400&cacheHint=true").content
     latest = json.loads(jsondata)
-    latest_data = [i for i in latest['features'] if
-                   i['attributes']["Country_Region"] == country]
-
+    try:
+        latest_data = [i for i in latest['features'] if
+                       i['attributes']["Country_Region"] == country]
+    except KeyError:
+        return dict(deaths="Unknown (upstream api overloaded)", cases="Unknown (upstream aoi overloaded)",
+                    recovered="Unknown (upstream api overloaded)", timestamp=datetime.datetime.now())
     latest_sum = {}
     for entry in latest_data:
         for attribute, value in entry['attributes'].items():
@@ -61,14 +82,20 @@ def get_latest(country):
 def predictions(country="Germany"):
     curve_fit, x, country_data = get_and_fit(country)
 
-    def when(l): return (np.log(l) - curve_fit[1]) / curve_fit[0]
+    def when(l):
+        return (np.log(l) - curve_fit[1]) / curve_fit[0]
 
-    def when_date(n): return (datetime.datetime.now() + datetime.timedelta(days=-when(n))).date()
+    def when_date(n):
+        return (datetime.datetime.now() + datetime.timedelta(days=-when(n))).date()
 
-    def howmany(d): return np.exp(curve_fit[1]) * np.exp(curve_fit[0] * d)
+    def howmany(d):
+        return np.exp(curve_fit[1]) * np.exp(curve_fit[0] * d)
 
     doublingrate = round(-when(2) + when(1), 2)
-    current = get_latest(country)
+    try:
+        current = get_latest(country)
+    except ExtraDataError:
+        current = dict()
     current.update(dict(country=country, t2=doublingrate, date10k=when_date(10000), date100k=when_date(100000),
                         date1m=when_date(1000000)))
     return current
@@ -86,13 +113,20 @@ def get_and_fit(country):
     mask = np.array(country_data) < 20
     x_data = np.ma.array([(datetime.datetime.now() - a).days for a in x], mask=mask)[max(len(x) - 6, 0):]
     log_y_data = np.log(np.ma.array(country_data, mask=mask))[max(len(x) - 6, 0):]
-    curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
+    try:
+        curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
+    except TypeError:
+        curve_fit = [None, None]
     return curve_fit, x, country_data
 
 
 @app.route('/<country>.html')
 def html(country="Germany"):
-    data = predictions(country)
+    try:
+        data = predictions(country)
+    except Exception as exc:
+        logger.exception("exception when making html")
+        return Response(ERROR.format(country=country, exception=exc), mimetype="text/html")
     return Response(HTML.format(**data), mimetype='text/html')
 
 
@@ -167,9 +201,7 @@ HTML = """
 <b>10k infections on</b> {date10k}<BR/>
 <b>100k infections on</b> {date100k}<BR/>
 <b>1M infections on</b> {date1m}<BR/></P>
-<hr>
-latest: cases {cases} deaths {deaths}<BR/>
-upstream data corrupt -> 0 deaths and 0 cases<BR/>
+latest: <BR/><B>cases:</B> {cases}<BR/><B>deaths:</B> {deaths}<BR/>
 <IMG SRC="{country}.svg">
 </body>
 </html>
@@ -185,3 +217,11 @@ HTML_COUNTRIES = """
 </body>
 </html
 """
+
+ERROR = """
+<html>
+<title>error fetching {country}</title>
+<Body>
+There was a problem fetching {country}. {exception}
+</body>
+</html>"""
