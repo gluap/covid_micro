@@ -4,6 +4,9 @@ import json
 import logging
 from io import StringIO, BytesIO
 
+URL_TIMESERIES_CSV = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
+URL_ARCGIS_LATEST = "https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases/FeatureServer/1/query?f=json&where=(Confirmed%20%3E%200)&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=Deaths%20desc%2CCountry_Region%20asc%2CProvince_State%20asc&resultOffset=0&resultRecordCount=400&cacheHint=true"
+
 logger = logging.getLogger(__name__)
 
 import matplotlib
@@ -44,8 +47,7 @@ def get_cached(url, cache={}):
 
 
 def get_latest(country):
-    jsondata = get_cached(
-        "https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases/FeatureServer/1/query?f=json&where=(Confirmed%20%3E%200)&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=Deaths%20desc%2CCountry_Region%20asc%2CProvince_State%20asc&resultOffset=0&resultRecordCount=400&cacheHint=true").content
+    jsondata = get_cached(URL_ARCGIS_LATEST).content
     latest = json.loads(jsondata)
     try:
         latest_data = [i for i in latest['features'] if
@@ -102,8 +104,7 @@ def predictions(country="Germany"):
 
 
 def get_and_fit(country):
-    r = get_cached(
-        "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv").content
+    r = get_cached(URL_TIMESERIES_CSV).content
     data = [row for row in csv.reader(StringIO(r.decode("utf-8")))]
     all_country_data = [d[4:] for d in data if country in d]
     all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
@@ -199,7 +200,7 @@ HTML = """
 <h1>{country}</h1>
 <P><b>Doubling time:</b> {t2} Days<BR/>
 <b>10k infections on</b> {date10k}<BR/>
-<b>100k infections on</b> {date100k}<BR/>
+<b>100k infections on</b> {date100k}<BR/>g
 <b>1M infections on</b> {date1m}<BR/></P>
 latest: <BR/><B>cases:</B> {cases}<BR/><B>deaths:</B> {deaths}<BR/>
 <IMG SRC="{country}.svg">
