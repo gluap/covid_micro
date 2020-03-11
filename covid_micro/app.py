@@ -146,6 +146,7 @@ def plot(country="Germany"):
     bio = BytesIO()
     FigureCanvas(fig)
     fig.savefig(bio, format="svg")
+    matplotlib.pyplot.close(fig)
     return Response(bio.getvalue(), mimetype='image/svg+xml')
 
 
