@@ -4,7 +4,7 @@ from io import StringIO
 
 from flask import Flask, Response
 
-from covid_micro.app import plot, HTML_COUNTRIES, predictions, logger, ERROR, HTML, get_cached, URL_TIMESERIES_CSV
+from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CSV
 
 __version__ = 0.1
 
@@ -12,7 +12,7 @@ __version__ = 0.1
 def create_app():
     app = Flask(__name__)
 
-    @app.route('/<country>.svg')
+    @app.route('/<country>_timeseries.svg')
     def deliver_plot(country="Germany", cache={}):
         if country not in cache or (
                 datetime.datetime.now() - cache[country]['timestamp'] > datetime.timedelta(minutes=15)):
@@ -39,3 +39,40 @@ def create_app():
         return Response(HTML.format(**data), mimetype='text/html')
 
     return app
+
+
+HTML = """
+<html>
+<title>Current {country} corona statistics</title> 
+<body>
+<h1>{country}</h1>
+<P><b>Doubling time:</b> {t2} Days<BR/>
+<b>10k infections on</b> {date10k}<BR/>
+<b>100k infections on</b> {date100k}<BR/>
+<b>1M infections on</b> {date1m}<BR/></P>
+latest: <BR/><B>cases:</B> {cases}<BR/><B>deaths:</B> {deaths}<BR/>
+<IMG SRC="{country}_timeseries.svg"><IMG SRC="{country}_doublingtime.svg">
+<P><B>methodology:</B> To evaluate the current doubling time and make the predictions, a linear equation is fit against the logarithm of the five most recent (finished) days of the time
+series data.<BR/>To evaluate the doubling time trend over time, the fit is repeated for chunks of five days.</P>
+<BR/>
+<a href="https://github.com/gluap/covid_micro">Github repo</a>
+</body>
+</html>
+"""
+HTML_COUNTRIES = """
+<html>
+<title>List of Countries</title>
+<Body>
+<ul>
+<LI/>{countries}
+</ul>
+</body>
+</html
+"""
+ERROR = """
+<html>
+<title>error fetching {country}</title>
+<Body>
+There was a problem fetching {country}. {exception}
+</body>
+</html>"""

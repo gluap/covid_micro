@@ -30,7 +30,7 @@ def get_cached(url, cache={}):
     result = requests.get(url)
     result_valid = True
     try:
-        if json in result.url:
+        if "json" in result.url:
             data = json.loads(result.content)
             if 'error' in data:
                 result_valid = False
@@ -82,7 +82,10 @@ def predictions(country="Germany"):
     curve_fit, x, country_data = get_and_fit(country)
 
     def when(l):
-        return (np.log(l) - curve_fit[1]) / curve_fit[0]
+        try:
+            return (np.log(l) - curve_fit[1]) / curve_fit[0]
+        except TypeError:
+            return None
 
     def when_date(n):
         return (datetime.datetime.now() + datetime.timedelta(days=-when(n))).date()
@@ -90,7 +93,7 @@ def predictions(country="Germany"):
     def howmany(d):
         return np.exp(curve_fit[1]) * np.exp(curve_fit[0] * d)
 
-    doublingrate = round(-when(2) + when(1), 2)
+    doublingrate = round(-when(2) + when(1), 2) if when(1) is not None else None
     try:
         current = get_latest(country)
     except ExtraDataError:
@@ -164,38 +167,3 @@ def plot(country="Germany"):
     fig.savefig(bio, format="svg")
     matplotlib.pyplot.close(fig)
     return bio.getvalue()
-
-
-HTML = """
-<html>
-<title>Current {country} corona statistics</title> 
-<body>
-<h1>{country}</h1>
-<P><b>Doubling time:</b> {t2} Days<BR/>
-<b>10k infections on</b> {date10k}<BR/>
-<b>100k infections on</b> {date100k}<BR/>
-<b>1M infections on</b> {date1m}<BR/></P>
-latest: <BR/><B>cases:</B> {cases}<BR/><B>deaths:</B> {deaths}<BR/>
-<IMG SRC="{country}.svg">
-</body>
-</html>
-"""
-
-HTML_COUNTRIES = """
-<html>
-<title>List of Countries</title>
-<Body>
-<ul>
-<LI/>{countries}
-</ul>
-</body>
-</html
-"""
-
-ERROR = """
-<html>
-<title>error fetching {country}</title>
-<Body>
-There was a problem fetching {country}. {exception}
-</body>
-</html>"""
