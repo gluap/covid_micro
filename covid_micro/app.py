@@ -179,7 +179,7 @@ latest: <BR/><B>cases:</B> {cases}<BR/><B>deaths:</B> {deaths}<BR/>
 
 HTML_COUNTRIES = """
 <html>
-<title>List of Coutnries</title>
+<title>List of Countries</title>
 <Body>
 <ul>
 <LI/>{countries}
