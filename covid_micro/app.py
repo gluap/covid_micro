@@ -4,6 +4,8 @@ import json
 import logging
 from io import StringIO, BytesIO
 
+WINDOW = 6
+
 URL_TIMESERIES_CSV = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
 URL_ARCGIS_LATEST = "https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases/FeatureServer/1/query?f=json&where=(Confirmed%20%3E%200)&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=Deaths%20desc%2CCountry_Region%20asc%2CProvince_State%20asc&resultOffset=0&resultRecordCount=400&cacheHint=true"
 
@@ -124,10 +126,53 @@ def timeseries_data(country):
     country_data = np.sum(all_country_data_numeric, 0)
     x = [datetime.datetime.strptime(d, '%m/%d/%y') + datetime.timedelta(days=1) for d in
          data[0][-len(country_data) + len(data[0]):]]
-    mask = np.array(country_data) < 20
-    x_data = np.ma.array([(datetime.datetime.now() - a).days for a in x], mask=mask)[max(len(x) - 6, 0):]
-    log_y_data = np.log(np.ma.array(country_data, mask=mask))[max(len(x) - 6, 0):]
+    mask = np.array(country_data) < 10
+    x_data = np.ma.array([(datetime.datetime.now() - a).days for a in x], mask=mask)[max(len(x) - WINDOW, 0):]
+    log_y_data = np.log(np.ma.array(country_data, mask=mask))[max(len(x) - WINDOW, 0):]
     return country_data, log_y_data, x, x_data
+
+
+def sliding_window_fit(country):
+    country_data, log_y_data, x, x_data = timeseries_data(country)
+    times = []
+    dates = []
+    for i in range(0, len(x) - WINDOW):
+        x_data = np.ma.array([(a - datetime.datetime.now()).days for a in x])[i:i + WINDOW]
+        log_y_data = np.log(np.ma.array(country_data))[i:i + WINDOW]
+        if max(np.ma.array(country_data)[i:i + WINDOW]) < 50:
+            continue
+        curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
+        doublingrate = np.log(2) / curve_fit[0]
+        times.append(doublingrate)
+        dates.append(x[0] + datetime.timedelta(days=i + WINDOW))
+        print(curve_fit)
+    return times, dates
+
+
+def plot_sliding_window_fit(country):
+    times, dates = sliding_window_fit(country)
+
+    fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
+    ax = fig.add_subplot(2, 1, 1)
+    if len(times) > 2:
+
+        ax.set_ylim(0, max(times) + 1)
+        ax.plot(dates, times, "g.")
+        matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right",
+                               rotation_mode="anchor")
+    else:
+        ax.text(0, 1, "Not enough data")
+        ax.set_ylim(0, 2)
+        ax.set_xlim(0, 2)
+    ax.set_xlabel("date")
+    ax.set_ylabel(f"$T_2$ over 5 days")
+    ax.set_title(country)
+
+    bio = BytesIO()
+    FigureCanvas(fig)
+    fig.savefig(bio, format="svg")
+    matplotlib.pyplot.close(fig)
+    return bio.getvalue()
 
 
 def plot(country="Germany"):

@@ -4,7 +4,7 @@ from io import StringIO
 
 from flask import Flask, Response
 
-from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CSV
+from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CSV,plot_sliding_window_fit
 
 __version__ = 0.1
 
@@ -19,6 +19,15 @@ def create_app():
             cache[country] = {'data': plot(country),
                               'timestamp': datetime.datetime.now()}
         return Response(cache[country]['data'], mimetype='image/svg+xml')
+
+    @app.route('/<country>_doublingtime.svg')
+    def deliver_plot_doublingtimes(country="Germany", cache={}):
+        if country not in cache or (
+                datetime.datetime.now() - cache[country]['timestamp'] > datetime.timedelta(minutes=15)):
+            cache[country] = {'data': plot_sliding_window_fit(country),
+                              'timestamp': datetime.datetime.now()}
+        return Response(cache[country]['data'], mimetype='image/svg+xml')
+
 
     @app.route('/')
     @app.route('/index.html')
