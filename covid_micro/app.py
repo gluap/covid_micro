@@ -103,8 +103,12 @@ def predictions(country="Germany"):
 def get_and_fit(country):
     r = get_cached(URL_TIMESERIES_CSV).content
     data = [row for row in csv.reader(StringIO(r.decode("utf-8")))]
-    all_country_data = [d[4:] for d in data if country in d]
-    all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
+    if country=="US":
+        all_country_data = [d[4:] for d in data if country in d and "," in d[0]]
+        all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
+    else:
+        all_country_data = [d[4:] for d in data if country in d]
+        all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
     country_data = np.sum(all_country_data_numeric, 0)
     x = [datetime.datetime.strptime(d, '%m/%d/%y') + datetime.timedelta(days=1) for d in
          data[0][-len(country_data) + len(data[0]):]]
