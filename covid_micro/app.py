@@ -104,9 +104,18 @@ def predictions(country="Germany"):
 
 
 def get_and_fit(country):
+    country_data, log_y_data, x, x_data = timeseries_data(country)
+    try:
+        curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
+    except TypeError:
+        curve_fit = [None, None]
+    return curve_fit, x, country_data
+
+
+def timeseries_data(country):
     r = get_cached(URL_TIMESERIES_CSV).content
     data = [row for row in csv.reader(StringIO(r.decode("utf-8")))]
-    if country=="US":
+    if country == "US":
         all_country_data = [d[4:] for d in data if country in d and "," in d[0]]
         all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
     else:
@@ -118,11 +127,7 @@ def get_and_fit(country):
     mask = np.array(country_data) < 20
     x_data = np.ma.array([(datetime.datetime.now() - a).days for a in x], mask=mask)[max(len(x) - 6, 0):]
     log_y_data = np.log(np.ma.array(country_data, mask=mask))[max(len(x) - 6, 0):]
-    try:
-        curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
-    except TypeError:
-        curve_fit = [None, None]
-    return curve_fit, x, country_data
+    return country_data, log_y_data, x, x_data
 
 
 def plot(country="Germany"):
