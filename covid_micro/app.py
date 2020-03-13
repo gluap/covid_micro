@@ -6,7 +6,10 @@ from io import StringIO, BytesIO
 
 WINDOW = 6
 
-URL_TIMESERIES_CSV = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
+URL_TIMESERIES_CONFIRMED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
+URL_TIMESERIES_DEATHS = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv"
+URL_TIMESERIES_RECOVERED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"
+
 URL_ARCGIS_LATEST = "https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases/FeatureServer/1/query?f=json&where=(Confirmed%20%3E%200)&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=Deaths%20desc%2CCountry_Region%20asc%2CProvince_State%20asc&resultOffset=0&resultRecordCount=400&cacheHint=true"
 
 logger = logging.getLogger(__name__)
@@ -115,7 +118,21 @@ def get_and_fit(country):
 
 
 def timeseries_data(country):
-    r = get_cached(URL_TIMESERIES_CSV).content
+    country_data_confirmed, data = get_timeseries_from_url(country, URL_TIMESERIES_CONFIRMED)
+    country_data_recovered, data_recovered = get_timeseries_from_url(country, URL_TIMESERIES_RECOVERED)
+    country_data_deaths, data_deaths = get_timeseries_from_url(country, URL_TIMESERIES_DEATHS)
+    country_data_active = country_data_confirmed-country_data_deaths-country_data_recovered
+
+    x = [datetime.datetime.strptime(d, '%m/%d/%y') + datetime.timedelta(days=1) for d in
+         data[0][-len(country_data_confirmed) + len(data[0]):]]
+    mask = np.array(country_data_active) < 10
+    x_data = np.ma.array([(datetime.datetime.now() - a).days for a in x], mask=mask)[max(len(x) - WINDOW, 0):]
+    log_y_data = np.log(np.ma.array(country_data_active, mask=mask))[max(len(x) - WINDOW, 0):]
+    return country_data_confirmed, log_y_data, x, x_data
+
+
+def get_timeseries_from_url(country, url):
+    r = get_cached(url).content
     data = [row for row in csv.reader(StringIO(r.decode("utf-8")))]
     if country == "US":
         all_country_data = [d[4:] for d in data if country in d and "," in d[0]]
@@ -124,12 +141,7 @@ def timeseries_data(country):
         all_country_data = [d[4:] for d in data if country in d]
         all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
     country_data = np.sum(all_country_data_numeric, 0)
-    x = [datetime.datetime.strptime(d, '%m/%d/%y') + datetime.timedelta(days=1) for d in
-         data[0][-len(country_data) + len(data[0]):]]
-    mask = np.array(country_data) < 10
-    x_data = np.ma.array([(datetime.datetime.now() - a).days for a in x], mask=mask)[max(len(x) - WINDOW, 0):]
-    log_y_data = np.log(np.ma.array(country_data, mask=mask))[max(len(x) - WINDOW, 0):]
-    return country_data, log_y_data, x, x_data
+    return country_data, data
 
 
 def sliding_window_fit(country):

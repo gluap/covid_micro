@@ -4,7 +4,7 @@ from io import StringIO
 
 from flask import Flask, Response
 
-from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CSV,plot_sliding_window_fit
+from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CONFIRMED,plot_sliding_window_fit
 
 __version__ = 0.1
 
@@ -32,7 +32,7 @@ def create_app():
     @app.route('/')
     @app.route('/index.html')
     def index():
-        r = get_cached(URL_TIMESERIES_CSV).content
+        r = get_cached(URL_TIMESERIES_CONFIRMED).content
         data = [row for row in csv.reader(StringIO(r.decode("utf-8")))]
         countries = set([row[1] for row in data])
         return Response(
