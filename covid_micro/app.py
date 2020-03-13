@@ -160,8 +160,7 @@ def timeseries_data(country):
 
     country_data_active = country_data_confirmed  # - country_data_deaths - country_data_recovered
 
-    x = [datetime.datetime.strptime(d, '%m/%d/%y') + datetime.timedelta(days=1) for d in
-         data[0][4:]]
+    x = [datetime.datetime.strptime(d, '%m/%d/%y') + datetime.timedelta(days=1) for d in data[0][4:]]
 
     if not latest["error"]:
         x.append(latest["timestamp"])
@@ -246,7 +245,7 @@ def plot(country="Germany"):
     prediction_x = x.copy()
     prediction_x.append(d0 + datetime.timedelta(days=10))
 
-    prediction_x_days = np.array([(datetime.datetime.now() - a).days for a in prediction_x])
+    prediction_x_days = np.array([(datetime.datetime.now() - a).days + 1 for a in prediction_x])
     prediction_y = np.exp(curve_fit[1]) * np.exp(curve_fit[0] * prediction_x_days)
 
     fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
