@@ -160,7 +160,8 @@ def timeseries_data(country):
     x = [datetime.datetime.strptime(d, '%m/%d/%y') + datetime.timedelta(days=1) for d in
          data[0][-len(country_data_confirmed) +1 + len(data[0]):]]
 
-    x.append(latest["timestamp"])
+    if not latest["error"]:
+        x.append(latest["timestamp"])
 
     mask = np.array(country_data_active) < 10
 
