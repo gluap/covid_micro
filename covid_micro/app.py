@@ -243,7 +243,7 @@ def plot(country="Germany"):
     d1 = datetime.datetime.combine(datetime.date(year=2020, day=25, month=2), datetime.datetime.min.time())
 
     prediction_x = x.copy()
-    prediction_x.append(d0 + datetime.timedelta(days=10))
+    prediction_x = [d0 - datetime.timedelta(days=10), d0 + datetime.timedelta(days=10)]
 
     prediction_x_days = np.array([(datetime.datetime.now() - a).days + 1 for a in prediction_x])
     prediction_y = np.exp(curve_fit[1]) * np.exp(curve_fit[0] * prediction_x_days)
