@@ -196,9 +196,7 @@ def sliding_window_fit(country):
         curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
         doublingrate = np.log(2) / curve_fit[0]
         times.append(doublingrate)
-        dates.append(
-            datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time()) + datetime.timedelta(
-                days=1+float(x_data[-2])))
+        dates.append(x[i+WINDOW-1])
     return times, dates
 
 
