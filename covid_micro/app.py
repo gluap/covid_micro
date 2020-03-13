@@ -57,7 +57,7 @@ def get_latest(country):
                        i['attributes']["Country_Region"] == country]
     except KeyError:
         return dict(deaths="Unknown (upstream api overloaded)", cases="Unknown (upstream aoi overloaded)",
-                    recovered="Unknown (upstream api overloaded)", timestamp=datetime.datetime.now())
+                    recovered="Unknown (upstream api overloaded)", timestamp=datetime.datetime.now(), error=True)
     latest_sum = {}
     for entry in latest_data:
         for attribute, value in entry['attributes'].items():
@@ -73,17 +73,18 @@ def get_latest(country):
         latest_cases = latest_data['Confirmed']
         latest_deaths = latest_data['Deaths']
         latest_recovered = latest_data['Recovered']
-        latest_error=False
+        latest_error = False
     except KeyError:
         latest_timestamp = datetime.datetime.now()
         latest_cases = "Upstream API timestamp missing"
         latest_deaths = "Upstream API timestamp missing"
         latest_recovered = "Upstream API timestamp missing"
-        latest_error=True
+        latest_error = True
     #    latest_cases = latest_data['Confirmed']
     #    latest_deaths = latest_data['Deaths']
     #    latest_recovered = latest_data['Recovered']
-    return dict(deaths=latest_deaths, cases=latest_cases, recovered=latest_recovered, timestamp=latest_timestamp, error=latest_error)
+    return dict(deaths=latest_deaths, cases=latest_cases, recovered=latest_recovered, timestamp=latest_timestamp,
+                error=latest_error)
 
 
 def predictions(country="Germany"):
@@ -150,15 +151,17 @@ def timeseries_data(country):
     country_data_confirmed, data = get_timeseries_from_url(country, URL_TIMESERIES_CONFIRMED)
     country_data_recovered, data_recovered = get_timeseries_from_url(country, URL_TIMESERIES_RECOVERED)
     country_data_deaths, data_deaths = get_timeseries_from_url(country, URL_TIMESERIES_DEATHS)
+    added = 0
     if not latest["error"]:
         country_data_recovered = np.append(country_data_recovered, latest["recovered"])
         country_data_confirmed = np.append(country_data_confirmed, latest["cases"])
         country_data_deaths = np.append(country_data_deaths, latest["deaths"])
+        addded = 1
 
     country_data_active = country_data_confirmed  # - country_data_deaths - country_data_recovered
 
     x = [datetime.datetime.strptime(d, '%m/%d/%y') + datetime.timedelta(days=1) for d in
-         data[0][-len(country_data_confirmed) +1 + len(data[0]):]]
+         data[0][4:]]
 
     if not latest["error"]:
         x.append(latest["timestamp"])
@@ -197,7 +200,7 @@ def sliding_window_fit(country):
         curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
         doublingrate = np.log(2) / curve_fit[0]
         times.append(doublingrate)
-        dates.append(x[i+WINDOW-1])
+        dates.append(x[i + WINDOW - 1])
     return times, dates
 
 
