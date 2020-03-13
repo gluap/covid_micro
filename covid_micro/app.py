@@ -98,7 +98,7 @@ def predictions(country="Germany"):
     def howmany(d):
         return np.exp(curve_fit[1]) * np.exp(curve_fit[0] * d)
 
-    doublingrate = round(-when(2) + when(1), 2) if when(1) is not None else None
+    doublingrate = round(np.log(2) / curve_fit[0], 2) if when(1) is not None else None
     try:
         current = get_latest(country)
     except ExtraDataError:
