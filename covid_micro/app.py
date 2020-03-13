@@ -143,17 +143,32 @@ def exact_timeseries():
 
 
 def timeseries_data(country):
+    latest = get_latest(country)
+
     country_data_confirmed, data = get_timeseries_from_url(country, URL_TIMESERIES_CONFIRMED)
     country_data_recovered, data_recovered = get_timeseries_from_url(country, URL_TIMESERIES_RECOVERED)
     country_data_deaths, data_deaths = get_timeseries_from_url(country, URL_TIMESERIES_DEATHS)
-    country_data_active = country_data_confirmed - country_data_deaths - country_data_recovered
+
+    country_data_recovered = np.append(country_data_recovered, latest["recovered"])
+
+    country_data_confirmed = np.append(country_data_confirmed, latest["cases"])
+
+    country_data_deaths = np.append(country_data_deaths, latest["deaths"])
+
+    country_data_active = country_data_confirmed  # - country_data_deaths - country_data_recovered
 
     x = [datetime.datetime.strptime(d, '%m/%d/%y') + datetime.timedelta(days=1) for d in
-         data[0][-len(country_data_confirmed) + len(data[0]):]]
+         data[0][-len(country_data_confirmed) +1 + len(data[0]):]]
+
+    x.append(latest["timestamp"])
+
     mask = np.array(country_data_active) < 10
-    x_data = np.ma.array([(datetime.datetime.now() - a).days for a in x], mask=mask)[max(len(x) - WINDOW, 0):]
+
+    x_data = np.ma.array([(datetime.datetime.now() - a).total_seconds() / 3600. / 24. for a in x], mask=mask)[
+             max(len(x) - WINDOW, 0):]
     log_y_data = np.log(np.ma.array(country_data_active, mask=mask))[max(len(x) - WINDOW, 0):]
-    return country_data_confirmed, log_y_data, x, x_data
+
+    return country_data_active, log_y_data, x, x_data
 
 
 def get_timeseries_from_url(country, url):
@@ -174,14 +189,16 @@ def sliding_window_fit(country):
     times = []
     dates = []
     for i in range(0, len(x) - WINDOW + 1):
-        x_data = np.ma.array([(a - datetime.datetime.now()).days for a in x])[i:i + WINDOW]
+        x_data = np.ma.array([(a - datetime.datetime.now()).total_seconds() / 24.0 / 3600.0 for a in x])[i:i + WINDOW]
         log_y_data = np.log(np.ma.array(country_data))[i:i + WINDOW]
         if max(np.ma.array(country_data)[i:i + WINDOW]) < 50:
             continue
         curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
         doublingrate = np.log(2) / curve_fit[0]
         times.append(doublingrate)
-        dates.append(datetime.datetime.combine(datetime.date.today(),datetime.datetime.min.time()) + datetime.timedelta(days=int(x_data[-1])))
+        dates.append(
+            datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time()) + datetime.timedelta(
+                days=1+float(x_data[-2])))
     return times, dates
 
 
@@ -249,8 +266,6 @@ def plot(country="Germany"):
     ax.set_ylabel(f"COVID-19 infections")
     ax.set_title(country)
 
-    latest = get_latest(country)
-    ax.plot([latest['timestamp']], [latest['cases']], 'g.')
     bio = BytesIO()
     FigureCanvas(fig)
     fig.savefig(bio, format="svg")
