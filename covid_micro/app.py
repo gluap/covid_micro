@@ -95,9 +95,6 @@ def predictions(country="Germany"):
     def when_date(n):
         return (datetime.datetime.now() + datetime.timedelta(days=-when(n))).date()
 
-    def howmany(d):
-        return np.exp(curve_fit[1]) * np.exp(curve_fit[0] * d)
-
     doublingrate = round(np.log(2) / curve_fit[0], 2) if when(1) is not None else None
     try:
         current = get_latest(country)
@@ -148,7 +145,7 @@ def sliding_window_fit(country):
     country_data, log_y_data, x, x_data = timeseries_data(country)
     times = []
     dates = []
-    for i in range(0, len(x) - WINDOW):
+    for i in range(0, len(x) - WINDOW + 1):
         x_data = np.ma.array([(a - datetime.datetime.now()).days for a in x])[i:i + WINDOW]
         log_y_data = np.log(np.ma.array(country_data))[i:i + WINDOW]
         if max(np.ma.array(country_data)[i:i + WINDOW]) < 50:
@@ -156,8 +153,7 @@ def sliding_window_fit(country):
         curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
         doublingrate = np.log(2) / curve_fit[0]
         times.append(doublingrate)
-        dates.append(x[0] + datetime.timedelta(days=i + WINDOW))
-        print(curve_fit)
+        dates.append(datetime.datetime.combine(datetime.date.today(),datetime.datetime.min.time()) + datetime.timedelta(days=int(x_data[-1])))
     return times, dates
 
 
@@ -172,8 +168,11 @@ def plot_sliding_window_fit(country):
         ax.plot(dates, times, "g.")
         matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right",
                                rotation_mode="anchor")
+        ax.grid(True, which="major")
+        ax.grid(True, which="minor", linewidth=0.5)
     else:
         ax.text(0, 1, "Not enough data")
+
         ax.set_ylim(0, 2)
         ax.set_xlim(0, 2)
     ax.set_xlabel("date")
