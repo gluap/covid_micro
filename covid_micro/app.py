@@ -96,7 +96,7 @@ def predictions(country="Germany"):
     def when_date(n):
         return (datetime.datetime.now() + datetime.timedelta(days=-when(n))).date()
 
-    doublingrate = round(np.log(2) / curve_fit[0], 2) if when(1) is not None else None
+    doublingrate = - round(np.log(2) / curve_fit[0], 2) if when(1) is not None else None
     try:
         current = get_latest(country)
     except ExtraDataError:
