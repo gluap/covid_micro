@@ -9,6 +9,7 @@ WINDOW = 6
 URL_TIMESERIES_CONFIRMED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv"
 URL_TIMESERIES_DEATHS = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Deaths.csv"
 URL_TIMESERIES_RECOVERED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"
+URL_DAILY_REPORTS = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/{month:02d}-{day:02d}-2020.csv"
 
 URL_ARCGIS_LATEST = "https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases/FeatureServer/1/query?f=json&where=(Confirmed%20%3E%200)&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=Deaths%20desc%2CCountry_Region%20asc%2CProvince_State%20asc&resultOffset=0&resultRecordCount=400&cacheHint=true"
 
@@ -112,6 +113,33 @@ def get_and_fit(country):
     except TypeError:
         curve_fit = [None, None]
     return curve_fit, x, country_data
+
+
+def exact_timeseries():
+    day = datetime.date(year=2020, month=2, day=2)
+    timeseries = {}
+    while day < datetime.date.today():
+        report = get_cached(URL_DAILY_REPORTS.format(day=day.day, month=day.month)).content
+        data = [row for row in csv.reader(StringIO(report.decode("utf-8")))]
+        for row in data[1:]:
+            timestamp = datetime.datetime.strptime(row[2], "%Y-%m-%dT%H:%M:%S")
+            country = row[1]
+            province = row[0]
+            confirmed = row[3]
+            deaths = row[4]
+            recovered = row[5]
+            if (country, province) not in timeseries:
+                timeseries[(country, province)] = {"recovered": {"t": [], "y": []}, "deaths": {"t": [], "y": []},
+                                                   "confirmed": {"t": [], "y": []}}
+            timeseries[(country, province)]['recovered']['t'].append(timestamp)
+            timeseries[(country, province)]['deaths']['t'].append(timestamp)
+            timeseries[(country, province)]['confirmed']['t'].append(timestamp)
+            timeseries[(country, province)]['recovered']['y'].append(recovered)
+            timeseries[(country, province)]['deaths']['y'].append(deaths)
+            timeseries[(country, province)]['confirmed']['y'].append(confirmed)
+
+        day += datetime.timedelta(days=1)
+    return ("bla")
 
 
 def timeseries_data(country):
