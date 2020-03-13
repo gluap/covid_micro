@@ -121,7 +121,7 @@ def timeseries_data(country):
     country_data_confirmed, data = get_timeseries_from_url(country, URL_TIMESERIES_CONFIRMED)
     country_data_recovered, data_recovered = get_timeseries_from_url(country, URL_TIMESERIES_RECOVERED)
     country_data_deaths, data_deaths = get_timeseries_from_url(country, URL_TIMESERIES_DEATHS)
-    country_data_active = country_data_confirmed-country_data_deaths-country_data_recovered
+    country_data_active = country_data_confirmed - country_data_deaths - country_data_recovered
 
     x = [datetime.datetime.strptime(d, '%m/%d/%y') + datetime.timedelta(days=1) for d in
          data[0][-len(country_data_confirmed) + len(data[0]):]]
