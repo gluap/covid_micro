@@ -203,25 +203,52 @@ def sliding_window_fit(country):
     return times, dates
 
 
-def plot_sliding_window_fit(country):
+def estimate_from_daily(country, steps=1):
+    country_data, log_y_data, x, x_data = timeseries_data(country)
+    x_new = []
+    y_new = []
+    for n in range(len(country_data) - steps):
+        if min(country_data[n:n + steps]) < 20:
+            continue
+        t2 = -np.log(2) / (
+                np.log(country_data[n] / country_data[n + 1]) / ((x[n + 1] - x[n]).total_seconds() / 24. / 3600))
+        if np.abs(t2) < 90000:
+            x_new.append(x[n + steps])
+            y_new.append(t2)
+    return y_new, x_new
+
+
+def plot_doublingtime_estimates(country):
     times, dates = sliding_window_fit(country)
+    times3, dates3 = estimate_from_daily(country, steps=5)
 
-    fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
-    ax = fig.add_subplot(2, 1, 1)
+    # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
+    fig, axes = matplotlib.pyplot.subplots(nrows=2, ncols=1, sharex=True, sharey=True, figsize=(6, 6), dpi=300)
+
+    ax2 = axes[1]  # fig.add_subplot(212)
+    ax = axes[0]  # fig.add_subplot(211)
+
     if len(times) > 2:
-
-        ax.set_ylim(0, max(times) + 1)
+        ax.set_ylim(0, max(times) + 3)
         ax.plot(dates, times, "g.")
-        matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right",
-                               rotation_mode="anchor")
+        ax2.plot(dates3, times3, "b.")
+        ax.plot(dates, times, "g-", label="from fit over 5 data points")
+        ax2.plot(dates3, times3, "b-", label="$T_2=\\frac{\\mathrm{ln}(2)(t_1-t_0)}{\\mathrm{ln}(n_1/n_0)}$")
+        matplotlib.pyplot.setp(ax2.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+        ax2.grid(True, which="major")
+        ax2.grid(True, which="minor", linewidth=0.5)
         ax.grid(True, which="major")
         ax.grid(True, which="minor", linewidth=0.5)
+        ax2.legend(loc=2)
+        ax.legend(loc=2)
+
     else:
         ax.text(0, 1, "Not enough data")
 
         ax.set_ylim(0, 2)
         ax.set_xlim(0, 2)
-    ax.set_xlabel("date")
+    ax2.set_xlabel("date")
+    ax2.set_ylabel(f"$T_2$ over 5 days")
     ax.set_ylabel(f"$T_2$ over 5 days")
     ax.set_title(country)
 
