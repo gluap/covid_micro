@@ -269,9 +269,9 @@ def plot_deathrate_vs_detection(country):
     ax = fig.add_subplot()
 
     ax.plot(x, country_data_deaths, "g.")
-    ax.plot(shifted_x, country_data*0.008, "b.")
+    ax.plot(shifted_x, country_data * 0.008, "b.")
     ax.plot(x, country_data_deaths, "g-", label="deaths")
-    ax.plot(shifted_x, country_data*0.008, "b-", label="deaths(cases*0.008) shifted + 17.3 days")
+    ax.plot(shifted_x, country_data * 0.008, "b-", label="deaths(cases*0.008) shifted + 17.3 days")
     matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
     ax.grid(True, which="major")
     ax.grid(True, which="minor", linewidth=0.5)
@@ -280,7 +280,7 @@ def plot_deathrate_vs_detection(country):
     ax.legend(loc=2)
     ax.legend(loc=2)
 
-    ax.set_xlim((shifted_x[0],shifted_x[-1]))
+    ax.set_xlim((shifted_x[0], shifted_x[-1]))
 
     ax.set_ylabel(f"$T_2$ over 5 days")
     ax.set_title(country)
