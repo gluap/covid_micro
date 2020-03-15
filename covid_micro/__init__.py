@@ -79,6 +79,7 @@ it is assumed that people die on average 17.3 if they do. Some may die earlier s
 respect -- I could not find a propability distribution for thime between infection and death anywhere.
 <BR/>
 Furthermore the minimum rates of deaths (good healthcare system, not overwhelmed ~ 0.8%) and maximum (overwhelmed healthcare system like in Wuhan and Italy, 3.5% were taken from that article.
+The assumptions built on deaths are assuming that the disease has spread uninihbitetly. See for instance <a HREF="https://xn--grgen-jua.name/covid/Korea,%20South.html">South Korea</A> for an example where that assumption does not hold any more.
 </P>
 
 <a href="https://github.com/gluap/covid_micro">Github repo</a>
