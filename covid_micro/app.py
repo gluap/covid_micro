@@ -285,7 +285,6 @@ def plot_deathrate_vs_detection(country):
     ax.grid(True, which="major")
     ax.grid(True, which="minor", linewidth=0.5)
     ax.legend(loc=2)
-    ax.legend(loc=2)
 
     ax.set_xlim((shifted_x[0], shifted_x[-1]))
 
@@ -315,25 +314,28 @@ def plot(country="Germany"):
     prediction_x_days = np.array([(datetime.datetime.now() - a).days + 1 for a in prediction_x])
     prediction_y = np.exp(curve_fit[1]) * np.exp(curve_fit[0] * prediction_x_days)
 
-    fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
-    ax = fig.add_subplot(2, 1, 1)
+    fig = matplotlib.pyplot.figure(dpi=300)
+    ax = fig.add_subplot(1, 1, 1)
     ax.set_yscale('log')
 
-    ax.plot(x, country_data, "g.")
+    ax.plot(x, country_data, "b.", label="actual detected cases")
 
     ax.grid(True, which="major")
     ax.grid(True, which="minor", linewidth=0.5)
 
-    ax.set_ylim((18, 5e5))
+    ax.set_ylim((18, 1e3 * max(country_data_deaths / 0.008 * 2 ** (17.3 / 2))))
     #  ax.set_xlim((d1, d0 + datetime.timedelta(days=10)))
-    ax.plot(prediction_x, prediction_y, "b-")
-    ax.plot(x, country_data_deaths/0.008*2**(17.3/5), "g.", label="estimate from deaths assuming doubling time 5 days")
-    ax.plot(x, country_data_deaths/0.008*2**(17.3/2), "r.", label="estimate from deaths assuming doubling time 2 days")
+    ax.plot(prediction_x, prediction_y, "b-", label="fit")
+    ax.plot(x, country_data_deaths / 0.008 * 2 ** (17.3 / 5), "g.", label="estimate from deaths $T_2= 5$ days, p=0.8%")
+    ax.plot(x, country_data_deaths / 0.008 * 2 ** (17.3 / 2), "r.", label="estimate from deaths $T_2= 2$ days, p=0.8%")
 
     matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right",
                            rotation_mode="anchor")
     ax.set_xlabel("date")
     ax.set_ylabel(f"COVID-19 infections")
+
+    ax.legend(loc=2)
+
     ax.set_title(country)
 
     bio = BytesIO()
