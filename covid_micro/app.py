@@ -110,7 +110,7 @@ def predictions(country="Germany"):
 
 
 def get_and_fit(country):
-    country_data, log_y_data, x, x_data = timeseries_data(country)
+    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
     try:
         curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
     except TypeError:
@@ -171,7 +171,7 @@ def timeseries_data(country):
              max(len(x) - WINDOW, 0):]
     log_y_data = np.log(np.ma.array(country_data_active, mask=mask))[max(len(x) - WINDOW, 0):]
 
-    return country_data_active, log_y_data, x, x_data
+    return country_data_deaths, country_data_recovered, country_data_active, log_y_data, x, x_data
 
 
 def get_timeseries_from_url(country, url):
@@ -188,7 +188,7 @@ def get_timeseries_from_url(country, url):
 
 
 def sliding_window_fit(country):
-    country_data, log_y_data, x, x_data = timeseries_data(country)
+    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
     times = []
     dates = []
     for i in range(0, len(x) - WINDOW + 1):
@@ -204,7 +204,7 @@ def sliding_window_fit(country):
 
 
 def estimate_from_daily(country, steps=1):
-    country_data, log_y_data, x, x_data = timeseries_data(country)
+    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
     x_new = []
     y_new = []
     for n in range(len(country_data) - steps):
@@ -249,6 +249,39 @@ def plot_doublingtime_estimates(country):
         ax.set_xlim(0, 2)
     ax2.set_xlabel("date")
     ax2.set_ylabel(f"$T_2$ over 5 days")
+    ax.set_ylabel(f"$T_2$ over 5 days")
+    ax.set_title(country)
+
+    bio = BytesIO()
+    FigureCanvas(fig)
+    fig.savefig(bio, format="svg")
+    matplotlib.pyplot.close(fig)
+    return bio.getvalue()
+
+
+def plot_deathrate_vs_detection(country):
+    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
+
+    shifted_x = [d + datetime.timedelta(days=17.3) for d in x]
+
+    # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
+    fig = matplotlib.pyplot.figure(dpi=300)
+    ax = fig.add_subplot()
+
+    ax.plot(x, country_data_deaths, "g.")
+    ax.plot(shifted_x, country_data*0.008, "b.")
+    ax.plot(x, country_data_deaths, "g-", label="deaths")
+    ax.plot(shifted_x, country_data*0.008, "b-", label="deaths(cases*0.008) shifted + 17.3 days")
+    matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    ax.grid(True, which="major")
+    ax.grid(True, which="minor", linewidth=0.5)
+    ax.grid(True, which="major")
+    ax.grid(True, which="minor", linewidth=0.5)
+    ax.legend(loc=2)
+    ax.legend(loc=2)
+
+    ax.set_xlim((shifted_x[0],shifted_x[-1]))
+
     ax.set_ylabel(f"$T_2$ over 5 days")
     ax.set_title(country)
 

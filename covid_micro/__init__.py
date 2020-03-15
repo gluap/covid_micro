@@ -4,7 +4,7 @@ from io import StringIO
 
 from flask import Flask, Response
 
-from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CONFIRMED, plot_doublingtime_estimates
+from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CONFIRMED, plot_doublingtime_estimates, plot_deathrate_vs_detection
 
 __version__ = 0.1
 
@@ -27,6 +27,15 @@ def create_app():
             cache[country] = {'data': plot_doublingtime_estimates(country),
                               'timestamp': datetime.datetime.now()}
         return Response(cache[country]['data'], mimetype='image/svg+xml')
+
+    @app.route('/<country>_deathrate_shifted.svg')
+    def deliver_plot_deathrates(country="Germany", cache={}):
+        if country not in cache or (
+                datetime.datetime.now() - cache[country]['timestamp'] > datetime.timedelta(minutes=15)):
+            cache[country] = {'data': (plot_deathrate_vs_detection(country)),
+                              'timestamp': datetime.datetime.now()}
+        return Response(cache[country]['data'], mimetype='image/svg+xml')
+
 
     @app.route('/')
     @app.route('/index.html')
