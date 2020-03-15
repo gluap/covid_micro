@@ -63,10 +63,12 @@ def get_latest(country):
         for attribute, value in entry['attributes'].items():
             if attribute not in latest_sum:
                 latest_sum[attribute] = value
-            elif attribute != "Last_Update":
+            elif attribute != "Last_Update" and value is not None:
                 latest_sum[attribute] += value
-            else:
+            elif value is not None:
                 latest_sum[attribute] = max(latest_sum[attribute], value)
+            else:
+                continue
     latest_data = latest_sum
     try:
         latest_timestamp = datetime.datetime.fromtimestamp(latest_data['Last_Update'] / 1000)
@@ -268,10 +270,15 @@ def plot_deathrate_vs_detection(country):
     fig = matplotlib.pyplot.figure(dpi=300)
     ax = fig.add_subplot()
 
-    ax.plot(x, country_data_deaths, "g.")
-    ax.plot(shifted_x, country_data * 0.008, "b.")
-    ax.plot(x, country_data_deaths, "g-", label="deaths")
-    ax.plot(shifted_x, country_data * 0.008, "b-", label="deaths(cases*0.008) shifted + 17.3 days")
+    ax.plot(x, country_data_deaths, "b.")
+    ax.plot(shifted_x, country_data * 0.008, "g.")
+    ax.plot(x, country_data_deaths, "b", label="deaths")
+    ax.plot(shifted_x, country_data * 0.008, "g-", label="korea style deaths (cases*0.008) shifted + 17.3 days")
+    ax.plot(shifted_x, country_data * 0.035, "r-", label="wuhan-style deaths (cases*0.035) shifted + 17.3 days")
+    ax.plot(shifted_x, country_data * 0.035, "r.")
+    ax.fill_between(shifted_x, country_data * 0.008, country_data * 0.035, alpha=0.5,
+                    label="range of expected fatalities assuming 100% detection now")
+
     matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
     ax.grid(True, which="major")
     ax.grid(True, which="minor", linewidth=0.5)
@@ -282,7 +289,7 @@ def plot_deathrate_vs_detection(country):
 
     ax.set_xlim((shifted_x[0], shifted_x[-1]))
 
-    ax.set_ylabel(f"$T_2$ over 5 days")
+    ax.set_ylabel(f"Fatalities (blue line left of shaded area \n => current cases likely underreported)")
     ax.set_title(country)
 
     bio = BytesIO()
