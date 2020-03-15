@@ -73,7 +73,14 @@ latest upstream has timestamp {timestamp}: <BR/><B>cases:</B> {cases}<BR/><B>dea
 
 <P><B>methodology:</B> To evaluate the current doubling time and make the predictions, a linear equation is fit against the logarithm of the five most recent (finished) days of the time
 series data.<BR/>To evaluate the doubling time trend over time, the fit is repeated for chunks of five days.</P>
+
+<P>Information on estimates using deaths: following <A HREF="https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca">this article</A>
+it is assumed that people die on average 17.3 if they do. Some may die earlier so the plots are not accurate in that
+respect -- I could not find a propability distribution for thime between infection and death anywhere.
 <BR/>
+Furthermore the minimum rates of deaths (good healthcare system, not overwhelmed ~ 0.8%) and maximum (overwhelmed healthcare system like in Wuhan and Italy, 3.5% were taken from that article.
+</P>
+
 <a href="https://github.com/gluap/covid_micro">Github repo</a>
 </body>
 </html>
