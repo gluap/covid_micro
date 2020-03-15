@@ -272,7 +272,7 @@ def plot_deathrate_vs_detection(country):
 
     ax.plot(x, country_data_deaths, "b.")
     ax.plot(shifted_x, country_data * 0.008, "g.")
-    ax.plot(x, country_data_deaths, "b", label="deaths")
+    ax.plot(x, country_data_deaths, "b", label="actual fatalities")
     ax.plot(shifted_x, country_data * 0.008, "g-", label="korea style deaths (cases*0.008) shifted + 17.3 days")
     ax.plot(shifted_x, country_data * 0.035, "r-", label="wuhan-style deaths (cases*0.035) shifted + 17.3 days")
     ax.plot(shifted_x, country_data * 0.035, "r.")
