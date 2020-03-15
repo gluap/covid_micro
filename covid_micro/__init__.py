@@ -69,6 +69,8 @@ HTML = """
 <b>1M infections on</b> {date1m}<BR/></P>
 latest upstream has timestamp {timestamp}: <BR/><B>cases:</B> {cases}<BR/><B>deaths:</B> {deaths}<BR/>
 <IMG SRC="{country}_timeseries.svg"><IMG SRC="{country}_doublingtime.svg">
+<IMG SRC="{country}_deathrate_shifted.svg">
+
 <P><B>methodology:</B> To evaluate the current doubling time and make the predictions, a linear equation is fit against the logarithm of the five most recent (finished) days of the time
 series data.<BR/>To evaluate the doubling time trend over time, the fit is repeated for chunks of five days.</P>
 <BR/>

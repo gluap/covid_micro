@@ -90,7 +90,7 @@ def get_latest(country):
 
 
 def predictions(country="Germany"):
-    curve_fit, x, country_data = get_and_fit(country)
+    curve_fit, x, country_data, country_data_deaths, country_data_recovered = get_and_fit(country)
 
     def when(l):
         try:
@@ -117,7 +117,7 @@ def get_and_fit(country):
         curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
     except TypeError:
         curve_fit = [None, None]
-    return curve_fit, x, country_data
+    return curve_fit, x, country_data, country_data_deaths, country_data_recovered
 
 
 def exact_timeseries():
@@ -300,7 +300,7 @@ def plot_deathrate_vs_detection(country):
 
 
 def plot(country="Germany"):
-    curve_fit, x, country_data = get_and_fit(country)
+    curve_fit, x, country_data, country_data_deaths, country_data_recovered = get_and_fit(country)
 
     def when(l): return (np.log(l) - curve_fit[1]) / curve_fit[0]
 
@@ -327,6 +327,8 @@ def plot(country="Germany"):
     ax.set_ylim((18, 5e5))
     #  ax.set_xlim((d1, d0 + datetime.timedelta(days=10)))
     ax.plot(prediction_x, prediction_y, "b-")
+    ax.plot(x, country_data_deaths/0.008*2**(17.3/5), "g.", label="estimate from deaths assuming doubling time 5 days")
+    ax.plot(x, country_data_deaths/0.008*2**(17.3/2), "r.", label="estimate from deaths assuming doubling time 2 days")
 
     matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right",
                            rotation_mode="anchor")
