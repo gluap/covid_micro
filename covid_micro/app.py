@@ -222,7 +222,7 @@ def estimate_from_daily(country, steps=1):
 
 def plot_doublingtime_estimates(country):
     times, dates = sliding_window_fit(country)
-    times3, dates3 = estimate_from_daily(country, steps=5)
+    times3, dates3 = estimate_from_daily(country, steps=1)
 
     # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
     fig, axes = matplotlib.pyplot.subplots(nrows=2, ncols=1, sharex=True, sharey=True, figsize=(6, 6), dpi=300)
