@@ -107,7 +107,8 @@ def predictions(country="Germany"):
     except ExtraDataError:
         current = dict()
     current.update(dict(country=country, t2=doublingrate, date10k=when_date(10000), date100k=when_date(100000),
-                        date1m=when_date(1000000), deaths_per_confirmed=round(country_data_deaths[-1]/country_data[-1],4)))
+                        date1m=when_date(1000000),
+                        deaths_per_confirmed=round(country_data_deaths[-1] / country_data[-1], 4)))
     return current
 
 
@@ -179,11 +180,11 @@ def timeseries_data(country):
 def get_timeseries_from_url(country, url):
     r = get_cached(url).content
     data = [row for row in csv.reader(StringIO(r.decode("utf-8")))]
-#### old handling for US from back when they reported the valid data only on a county basis
-#    if country == "not_needed_any_more":
-#        all_country_data = [d[4:] for d in data if country in d and "," in d[0]]
-#        all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
-#    else:
+    #### old handling for US from back when they reported the valid data only on a county basis
+    #    if country == "not_needed_any_more":
+    #        all_country_data = [d[4:] for d in data if country in d and "," in d[0]]
+    #        all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
+    #    else:
     all_country_data = [d[4:] for d in data if country in d]
     all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
     country_data = np.sum(all_country_data_numeric, 0)
@@ -308,7 +309,7 @@ def plot_deaths_per_confirmed(country):
     fig = matplotlib.pyplot.figure(dpi=300)
     ax = fig.add_subplot()
 
-    ax.plot(x, country_data_deaths/country_data, "b.", label="deaths/confirmed cases")
+    ax.plot(x, country_data_deaths / country_data, "b.", label="deaths/confirmed cases")
     matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
     ax.grid(True, which="major")
     ax.grid(True, which="minor", linewidth=0.5)
@@ -328,9 +329,18 @@ def plot_deaths_per_confirmed(country):
     return bio.getvalue()
 
 
+def get_inhabitants(country):
+    res = get_cached(f"https://restcountries.eu/rest/v2/name/{country}").json()
+    try:
+        return int(res[0]["population"])
+    except:
+        return None
+
 
 def plot(country="Germany"):
     curve_fit, x, country_data, country_data_deaths, country_data_recovered = get_and_fit(country)
+
+    inhabitants = get_inhabitants(country)
 
     def when(l): return (np.log(l) - curve_fit[1]) / curve_fit[0]
 
@@ -359,6 +369,15 @@ def plot(country="Germany"):
     ax.plot(prediction_x, prediction_y, "b-", label="fit")
     ax.plot(x, country_data_deaths / 0.008 * 2 ** (17.3 / 5), "g.", label="estimate from deaths $T_2= 5$ days, p=0.8%")
     ax.plot(x, country_data_deaths / 0.008 * 2 ** (17.3 / 2), "r.", label="estimate from deaths $T_2= 2$ days, p=0.8%")
+
+    if inhabitants is not None:
+        ax.axhline(10 * inhabitants / 100000 / 0.05, color="red", alpha=0.5)
+        ax.axhline(20 * inhabitants / 100000 / 0.05, color="orange", alpha=0.5)
+        ax.axhline(30 * inhabitants / 100000 / 0.05, color="green", alpha=0.5)
+        ax.text(x[0], 30 * inhabitants / 100000 / 0.05, "30 intensive care beds/100k inhabitants", color="green",
+                va="bottom")
+        ax.text(x[0], 10 * inhabitants / 100000 / 0.05, "10 intensive care beds/100k inhabitants", color="red",
+                va="top")
 
     matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right",
                            rotation_mode="anchor")
