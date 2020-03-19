@@ -368,12 +368,11 @@ def plot(country="Germany"):
     ax.plot(x, country_data_deaths / 0.008 * 2 ** (17.3 / 2), "r.", label="estimate from deaths $T_2= 2$ days, p=0.8%")
 
     if inhabitants is not None:
-        ax.axhline(10 * inhabitants / 100000 / 0.05, color="red", alpha=0.5)
-        ax.axhline(20 * inhabitants / 100000 / 0.05, color="orange", alpha=0.5)
+        ax.axhline(10 * inhabitants / 100000 / 0.10, color="red", alpha=0.5)
         ax.axhline(30 * inhabitants / 100000 / 0.05, color="green", alpha=0.5)
-        ax.text(x[0], 30 * inhabitants / 100000 / 0.05, "30 intensive care beds/100k inhabitants", color="green",
+        ax.text(x[0], 30 * inhabitants / 100000 / 0.05, "30 COVID-ICU beds/100k 5% need them", color="green",
                 va="bottom")
-        ax.text(x[0], 10 * inhabitants / 100000 / 0.05, "10 intensive care beds/100k inhabitants", color="red",
+        ax.text(x[0], 10 * inhabitants / 100000 / 0.05, "10 COVID-ICU beds/100k 10% need them",color="red",
                 va="top")
 
     matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=25, ha="right",
