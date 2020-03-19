@@ -103,7 +103,8 @@ The assumptions built on deaths are assuming that the disease has spread uninihb
 5% of COVID-19 patiens need intensive care, these lines indicate when the respective number of infected needing
 intensive care exceeds the number ov available beds. Because the infection is not distributed isotropically, 
 some areas of the country will see an overload of their hospitals way earlier, some others slightly later.
-Note that no matter how many beds you have on a exponential with typical doubling time it buys you only a few days.
+<B>Note that no matter how many beds you have on an exponential with typical doubling time of 3-5 daysit buys you only a 
+few days.</B>
 Some reference countries have <A HREF=¨https://sccm.org/Blog/March-2020/United-States-Resource-Availability-for-COVID-19?_zs=jxpjd1&_zl=w9pb6">this many beds</A> / 100k population:<BR/>
 <BR/><B>US: 34.7</B>
 <BR/><B>Germany: 29.2</B>
