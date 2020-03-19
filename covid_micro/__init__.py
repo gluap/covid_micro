@@ -102,7 +102,15 @@ The assumptions built on deaths are assuming that the disease has spread uninihb
 <P><B>Intensive care beds/capita</B>: Assuming all intensive care beds in a country are given to COVID-19 patients, and that
 5% of COVID-19 patiens need intensive care, these lines indicate when the respective number of infected needing
 intensive care exceeds the number ov available beds. Because the infection is not distributed isotropically, 
-some areas of the country will see an overload of their hospitals way earlier, some others slightly later.</P>
+some areas of the country will see an overload of their hospitals way earlier, some others slightly later.
+Note that no matter how many beds you have on a exponential with typical doubling time it buys you only a few days.
+Some reference countries have <A HREF=¨https://sccm.org/Blog/March-2020/United-States-Resource-Availability-for-COVID-19?_zs=jxpjd1&_zl=w9pb6">this many beds</A> / 100k population:<BR/>
+<BR/><B>US: 34.7</B>
+<BR/><B>Germany: 29.2</B>
+<BR/><B>Italy: 12.5</B>
+<BR/><B>France: 11.6</B>
+<BR/><B>Spain: 9.7</B>
+<BR/><B>UK: 6.6</B>UK</P>
 
 <P><b>deaths/confirmed cases:</b> a low number of deaths per confirmed case can be considered a good rate of testing or
 a very early stage of the epidemic (because it takes some time for the diesease to kill people, so in the beginning
