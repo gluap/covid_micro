@@ -90,7 +90,7 @@ HTML_COUNTRIES = """
 <html>
 <title>List of Countries</title>
 <Body>
-<H1>List of countries</A>
+<H1>List of countries</H1>
 Caveat: Not all countries have enough data for a meaningful plot, but most larger developed nations sadly do.
 <ul>
 <LI/>{countries}
