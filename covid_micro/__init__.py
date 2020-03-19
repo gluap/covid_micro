@@ -62,7 +62,8 @@ HTML = """
 <html>
 <title>Current {country} corona statistics</title> 
 <body>
-<h1>{country}</h1>
+<h1>{country}</h1><BR/>
+<A HREF="index.html">list of countries</A>
 <P><b>Doubling time:</b> {t2} Days<BR/>
 <b>10k infections on</b> {date10k}<BR/>
 <b>100k infections on</b> {date100k}<BR/>
@@ -90,6 +91,8 @@ HTML_COUNTRIES = """
 <html>
 <title>List of Countries</title>
 <Body>
+<H1>List of countries</H1>
+Caveat: Not all countries have enough data for a meaningful plot, but most larger developed nations sadly do.
 <ul>
 <LI/>{countries}
 </ul>

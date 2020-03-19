@@ -179,12 +179,13 @@ def timeseries_data(country):
 def get_timeseries_from_url(country, url):
     r = get_cached(url).content
     data = [row for row in csv.reader(StringIO(r.decode("utf-8")))]
-    if country == "US":
-        all_country_data = [d[4:] for d in data if country in d and "," in d[0]]
-        all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
-    else:
-        all_country_data = [d[4:] for d in data if country in d]
-        all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
+#### old handling for US from back when they reported the valid data only on a county basis
+#    if country == "not_needed_any_more":
+#        all_country_data = [d[4:] for d in data if country in d and "," in d[0]]
+#        all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
+#    else:
+    all_country_data = [d[4:] for d in data if country in d]
+    all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
     country_data = np.sum(all_country_data_numeric, 0)
     return country_data, data
 
@@ -222,7 +223,7 @@ def estimate_from_daily(country, steps=1):
 
 def plot_doublingtime_estimates(country):
     times, dates = sliding_window_fit(country)
-    times3, dates3 = estimate_from_daily(country, steps=5)
+    times3, dates3 = estimate_from_daily(country, steps=2)
 
     # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
     fig, axes = matplotlib.pyplot.subplots(nrows=2, ncols=1, sharex=True, sharey=True, figsize=(6, 6), dpi=300)
@@ -250,7 +251,7 @@ def plot_doublingtime_estimates(country):
         ax.set_ylim(0, 2)
         ax.set_xlim(0, 2)
     ax2.set_xlabel("date")
-    ax2.set_ylabel(f"$T_2$ over 5 days")
+    ax2.set_ylabel(f"$T_2$ over 2 days")
     ax.set_ylabel(f"$T_2$ over 5 days")
     ax.set_title(country)
 
