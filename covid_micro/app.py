@@ -227,7 +227,7 @@ def plot_doublingtime_estimates(country):
     times3, dates3 = estimate_from_daily(country, steps=2)
 
     # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
-    fig, axes = matplotlib.pyplot.subplots(nrows=2, ncols=1, sharex=True, sharey=True, figsize=(6, 6), dpi=300)
+    fig, axes = matplotlib.pyplot.subplots(nrows=2, ncols=1, sharex=True, sharey=True, figsize=(5, 5), dpi=300)
 
     ax2 = axes[1]  # fig.add_subplot(212)
     ax = axes[0]  # fig.add_subplot(211)
@@ -238,7 +238,7 @@ def plot_doublingtime_estimates(country):
         ax2.plot(dates3, times3, "b.")
         ax.plot(dates, times, "g-", label="from fit over 5 data points")
         ax2.plot(dates3, times3, "b-", label="$T_2=\\frac{\\mathrm{ln}(2)(t_1-t_0)}{\\mathrm{ln}(n_1/n_0)}$")
-        matplotlib.pyplot.setp(ax2.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+        matplotlib.pyplot.setp(ax2.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
         ax2.grid(True, which="major")
         ax2.grid(True, which="minor", linewidth=0.5)
         ax.grid(True, which="major")
@@ -254,7 +254,6 @@ def plot_doublingtime_estimates(country):
     ax2.set_xlabel("date")
     ax2.set_ylabel(f"$T_2$ over 2 days")
     ax.set_ylabel(f"$T_2$ over 5 days")
-    ax.set_title(country)
 
     bio = BytesIO()
     FigureCanvas(fig)
@@ -281,7 +280,7 @@ def plot_deathrate_vs_detection(country):
     ax.fill_between(shifted_x, country_data * 0.008, country_data * 0.035, alpha=0.5,
                     label="range of expected fatalities assuming 100% detection now")
 
-    matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
     ax.grid(True, which="major")
     ax.grid(True, which="minor", linewidth=0.5)
     ax.grid(True, which="major")
@@ -291,7 +290,6 @@ def plot_deathrate_vs_detection(country):
     ax.set_xlim((shifted_x[0], shifted_x[-1]))
 
     ax.set_ylabel(f"Fatalities (blue line left of shaded area \n => current cases likely underreported)")
-    ax.set_title(country)
 
     bio = BytesIO()
     FigureCanvas(fig)
@@ -310,7 +308,7 @@ def plot_deaths_per_confirmed(country):
     ax = fig.add_subplot()
 
     ax.plot(x, country_data_deaths / country_data, "b.", label="deaths/confirmed cases")
-    matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
     ax.grid(True, which="major")
     ax.grid(True, which="minor", linewidth=0.5)
     ax.grid(True, which="major")
@@ -320,7 +318,6 @@ def plot_deaths_per_confirmed(country):
     ax.set_xlim((shifted_x[0], shifted_x[-1]))
 
     ax.set_ylabel(f"deaths / confirmed cases")
-    ax.set_title(country)
 
     bio = BytesIO()
     FigureCanvas(fig)
@@ -379,14 +376,13 @@ def plot(country="Germany"):
         ax.text(x[0], 10 * inhabitants / 100000 / 0.05, "10 intensive care beds/100k inhabitants", color="red",
                 va="top")
 
-    matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=45, ha="right",
+    matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=25, ha="right",
                            rotation_mode="anchor")
     ax.set_xlabel("date")
     ax.set_ylabel(f"COVID-19 infections")
 
     ax.legend(loc=2)
 
-    ax.set_title(country)
 
     bio = BytesIO()
     FigureCanvas(fig)
