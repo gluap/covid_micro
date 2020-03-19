@@ -91,6 +91,17 @@ Furthermore the minimum rates of deaths (good healthcare system, not overwhelmed
 The assumptions built on deaths are assuming that the disease has spread uninihbitetly. See for instance <a HREF="https://xn--grgen-jua.name/covid/Korea,%20South.html">South Korea</A> for an example where that assumption does not hold any more.
 </P>
 
+<P><B>Intensive care beds/capita</B>: Assuming all intensive care beds in a country are given to COVID-19 patients, and that
+5% of COVID-19 patiens need intensive care, these lines indicate when the respective number of infected needing
+intensive care exceeds the number ov available beds. Because the infection is not distributed isotropically, 
+some areas of the country will see an overload of their hospitals way earlier, some others slightly later.</P>
+
+<P><b>deaths/confirmed cases:</b> a low number of deaths per confirmed case can be considered a good rate of testing or
+a very early stage of the epidemic (because it takes some time for the diesease to kill people, so in the beginning
+nobody is dead but there are already infected)..
+A high number of deaths/detected case indicates either an overloaded health care system at least in sections
+of a country or a low testing rate.</P>
+
 <a href="https://github.com/gluap/covid_micro">Github repo</a>
 </body>
 </html>
