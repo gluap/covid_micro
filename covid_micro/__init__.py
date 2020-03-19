@@ -101,7 +101,7 @@ The assumptions built on deaths are assuming that the disease has spread uninihb
 
 <P><B>Intensive care beds/capita</B>: Assuming all intensive care beds in a country are given to COVID-19 patients, and that
 5%-10% of COVID-19 patients need intensive care, these lines indicate when the respective number of infected needing
-intensive care exceeds the number ov available beds. Because the infection is not distributed isotropically, 
+intensive care exceeds the number of available beds. Because the infection is not distributed isotropically, 
 some areas of the country will see an overload of their hospitals way earlier, some others slightly later.
 <B>Note that no matter how many beds you have on an exponential with typical doubling time of 3-5 days it buys you only a 
 few days.</B>
