@@ -17,16 +17,24 @@ def create_app():
     def deliver_plot(country="Germany", cache={}):
         if country not in cache or (
                 datetime.datetime.now() - cache[country]['timestamp'] > datetime.timedelta(minutes=15)):
-            cache[country] = {'data': plot(country),
-                              'timestamp': datetime.datetime.now()}
+            try:
+                cache[country] = {'data': plot(country),
+                                  'timestamp': datetime.datetime.now()}
+            except (TypeError, ValueError):
+                cache[country] = {'data': plot(country),
+                                  'timestamp': datetime.datetime.now()}
         return Response(cache[country]['data'], mimetype='image/svg+xml')
 
     @app.route('/<country>_doublingtime.svg')
     def deliver_plot_doublingtimes(country="Germany", cache={}):
         if country not in cache or (
                 datetime.datetime.now() - cache[country]['timestamp'] > datetime.timedelta(minutes=15)):
-            cache[country] = {'data': plot_doublingtime_estimates(country),
-                              'timestamp': datetime.datetime.now()}
+            try:
+                cache[country] = {'data': plot_doublingtime_estimates(country),
+                                  'timestamp': datetime.datetime.now()}
+            except (TypeError, ValueError):
+                cache[country] = {'data': plot_doublingtime_estimates(country),
+                                  'timestamp': datetime.datetime.now()}
         return Response(cache[country]['data'], mimetype='image/svg+xml')
 
     @app.route('/<country>_deathrate_shifted.svg')
@@ -84,7 +92,7 @@ latest upstream has timestamp {timestamp}: <BR/><B>cases:</B> {cases}<BR/><B>dea
 series data.<BR/>To evaluate the doubling time trend over time, the fit is repeated for chunks of five days.</P>
 
 <P>Information on estimates using deaths: following <A HREF="https://medium.com/@tomaspueyo/coronavirus-act-today-or-people-will-die-f4d3d9cd99ca">this article</A>
-it is assumed that people die on average 17.3 if they do. Some may die earlier so the plots are not accurate in that
+it is assumed that people die on average on day 17.3 if they do. Some may die earlier so the plots are not accurate in that
 respect -- I could not find a propability distribution for thime between infection and death anywhere.
 <BR/>
 Furthermore the minimum rates of deaths (good healthcare system, not overwhelmed ~ 0.8%) and maximum (overwhelmed healthcare system like in Wuhan and Italy, 3.5% were taken from that article.
