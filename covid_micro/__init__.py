@@ -111,7 +111,7 @@ Some reference countries have <A HREF=¨https://sccm.org/Blog/March-2020/United-
 <BR/><B>Italy: 12.5</B>
 <BR/><B>France: 11.6</B>
 <BR/><B>Spain: 9.7</B>
-<BR/><B>UK: 6.6</B>UK</P>
+<BR/><B>UK: 6.6</B></P>
 
 <P><b>deaths/confirmed cases:</b> a low number of deaths per confirmed case can be considered a good rate of testing or
 a very early stage of the epidemic (because it takes some time for the diesease to kill people, so in the beginning
