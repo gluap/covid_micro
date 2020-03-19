@@ -100,12 +100,14 @@ The assumptions built on deaths are assuming that the disease has spread uninihb
 </P>
 
 <P><B>Intensive care beds/capita</B>: Assuming all intensive care beds in a country are given to COVID-19 patients, and that
-5% of COVID-19 patiens need intensive care, these lines indicate when the respective number of infected needing
+5%-10% of COVID-19 patients need intensive care, these lines indicate when the respective number of infected needing
 intensive care exceeds the number ov available beds. Because the infection is not distributed isotropically, 
 some areas of the country will see an overload of their hospitals way earlier, some others slightly later.
 <B>Note that no matter how many beds you have on an exponential with typical doubling time of 3-5 days it buys you only a 
 few days.</B>
-Some reference countries have <A HREF=¨https://sccm.org/Blog/March-2020/United-States-Resource-Availability-for-COVID-19?_zs=jxpjd1&_zl=w9pb6">this many beds</A> / 100k population:<BR/>
+Some reference countries have <A HREF=¨https://sccm.org/Blog/March-2020/United-States-Resource-Availability-for-COVID-19?_zs=jxpjd1&_zl=w9pb6">this many ICU beds</A> / 100k population.
+Note that surely some of these are in use by non-COVID-patients so likely even the best health care systems won't have
+30 beds/100k COVID patients<BR/>
 <BR/><B>US: 34.7</B>
 <BR/><B>Germany: 29.2</B>
 <BR/><B>Italy: 12.5</B>
