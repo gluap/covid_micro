@@ -326,10 +326,22 @@ def plot_deaths_per_confirmed(country):
     return bio.getvalue()
 
 
+COUNTRY_MAPPING = dict(US="United States of America")
+
+
 def get_inhabitants(country):
+    if country in COUNTRY_MAPPING:
+        country = COUNTRY_MAPPING[country]
     res = get_cached(f"https://restcountries.eu/rest/v2/name/{country}").json()
     try:
-        return int(res[0]["population"])
+        if len(res) == 1:
+            return int(res[0]["population"])
+        else:
+            for dataset in res:
+                if dataset['name'] == country:
+                    return int(dataset['population'])
+            return None
+
     except:
         return None
 
