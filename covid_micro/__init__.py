@@ -105,7 +105,7 @@ intensive care exceeds the number of available beds. Because the infection is no
 some areas of the country will see an overload of their hospitals way earlier, some others slightly later.
 <B>Note that no matter how many beds you have on an exponential with typical doubling time of 3-5 days it buys you only a 
 few days.</B>
-Some reference countries have <A HREF=¨https://sccm.org/Blog/March-2020/United-States-Resource-Availability-for-COVID-19?_zs=jxpjd1&_zl=w9pb6">this many ICU beds</A> / 100k population.
+Some reference countries have <A HREF="https://sccm.org/Blog/March-2020/United-States-Resource-Availability-for-COVID-19?_zs=jxpjd1&_zl=w9pb6">this many ICU beds</A> / 100k population.
 Note that surely some of these are in use by non-COVID-patients so likely even the best health care systems won't have
 30 beds/100k COVID patients<BR/>
 <BR/><B>US: 34.7</B>
