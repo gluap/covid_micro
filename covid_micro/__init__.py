@@ -7,6 +7,8 @@ from flask import Flask, Response
 from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CONFIRMED, \
     plot_doublingtime_estimates, plot_deathrate_vs_detection, plot_deaths_per_confirmed
 
+import os.path
+
 __version__ = 0.1
 
 
@@ -27,7 +29,7 @@ def create_app():
     
     @app.route('/favicon.png')
     def deliver():
-        return Response(open("favicon.png","rb").read(),mimetype="image/png")
+        return Response(open(os.path.join(os.path.dirname(__file__),"favicon.png"),"rb").read(),mimetype="image/png")
 
     @app.route('/<country>_doublingtime.svg')
     def deliver_plot_doublingtimes(country="Germany", cache={}):
