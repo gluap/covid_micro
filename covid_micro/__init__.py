@@ -24,6 +24,10 @@ def create_app():
                 cache[country] = {'data': plot(country),
                                   'timestamp': datetime.datetime.now()}
         return Response(cache[country]['data'], mimetype='image/svg+xml')
+    
+    @app.route('/favicon.png')
+    def deliver():
+        return Response(open("favicon.png","rb").read(),mimetype="image/png")
 
     @app.route('/<country>_doublingtime.svg')
     def deliver_plot_doublingtimes(country="Germany", cache={}):
@@ -76,7 +80,13 @@ def create_app():
 
 HTML = """
 <html>
+
+<head profile="http://www.w3.org/2005/10/profile">
+<link rel="icon" 
+      type="image/png" 
+      href="favicon.png">
 <title>Current {country} corona statistics</title> 
+</head>
 <body>
 <h1>{country}</h1><BR/>
 <A HREF="index.html">list of countries</A>
@@ -127,19 +137,29 @@ of a country or a low testing rate.</P>
 """
 HTML_COUNTRIES = """
 <html>
+<head profile="http://www.w3.org/2005/10/profile">
+<link rel="icon" 
+      type="image/png" 
+      href="favicon.png">
+
 <title>List of Countries</title>
-<Body>
+</head><Body>
 <H1>List of countries</H1>
 Caveat: Not all countries have enough data for a meaningful plot, but most larger developed nations sadly do.
 <ul>
 <LI/>{countries}
 </ul>
 </body>
-</html
+</html>
 """
 ERROR = """
 <html>
+<head profile="http://www.w3.org/2005/10/profile">
+<link rel="icon" 
+      type="image/png" 
+      href="favicon.png"> 
 <title>error fetching {country}</title>
+</head>
 <Body>
 There was a problem fetching {country}. {exception}
 </body>
