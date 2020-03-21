@@ -349,7 +349,7 @@ def plot(country="Germany"):
     prediction_x = x.copy()
     prediction_x = [d0 - datetime.timedelta(days=10), d0 + datetime.timedelta(days=10)]
 
-    prediction_x_days = np.array([(datetime.datetime.now() - a).days + 1 for a in prediction_x])
+    prediction_x_days = np.array([(datetime.datetime.now() - a).days + 0.5 for a in prediction_x])
     prediction_y = np.exp(curve_fit[1]) * np.exp(curve_fit[0] * prediction_x_days)
 
     fig = matplotlib.pyplot.figure(dpi=300)
@@ -372,7 +372,7 @@ def plot(country="Germany"):
         ax.axhline(30 * inhabitants / 100000 / 0.05, color="green", alpha=0.5)
         ax.text(x[0], 30 * inhabitants / 100000 / 0.05, "30 COVID-ICU beds/100k 5% need them", color="green",
                 va="bottom")
-        ax.text(x[0], 10 * inhabitants / 100000 / 0.05, "10 COVID-ICU beds/100k 10% need them",color="red",
+        ax.text(x[0], 10 * inhabitants / 100000 / 0.05, "10 COVID-ICU beds/100k 10% need them", color="red",
                 va="top")
 
     matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=25, ha="right",
@@ -381,7 +381,6 @@ def plot(country="Germany"):
     ax.set_ylabel(f"COVID-19 infections")
 
     ax.legend(loc=2)
-
 
     bio = BytesIO()
     FigureCanvas(fig)
