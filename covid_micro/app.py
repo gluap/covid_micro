@@ -61,7 +61,7 @@ def get_latest(country):
     latest_sum = {}
     for entry in latest_data:
         for attribute, value in entry['attributes'].items():
-            if attribute not in latest_sum:
+            if attribute not in latest_sum and value is not None:
                 latest_sum[attribute] = value
             elif attribute != "Last_Update" and value is not None:
                 latest_sum[attribute] += value
@@ -345,6 +345,22 @@ def get_inhabitants(country):
     except:
         return None
 
+
+def get_tld(country):
+    if country in COUNTRY_MAPPING:
+        country = COUNTRY_MAPPING[country]
+    res = get_cached(f"https://restcountries.eu/rest/v2/name/{country}").json()
+    try:
+        if len(res) == 1:
+            return res[0]["topLevelDomain"][0]
+        else:
+            for dataset in res:
+                if dataset['name'] == country:
+                    return dataset['topLevelDomain'][0]
+            return None
+
+    except:
+        return None
 
 def plot(country="Germany"):
     curve_fit, x, country_data, country_data_deaths, country_data_recovered = get_and_fit(country)

@@ -1,13 +1,12 @@
 import csv
 import datetime
+import os.path
 from io import StringIO
 
 from flask import Flask, Response
 
 from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CONFIRMED, \
     plot_doublingtime_estimates, plot_deathrate_vs_detection, plot_deaths_per_confirmed
-
-import os.path
 
 __version__ = 0.1
 
@@ -26,7 +25,7 @@ def create_app():
                 cache[country] = {'data': plot(country),
                                   'timestamp': datetime.datetime.now()}
         return Response(cache[country]['data'], mimetype='image/svg+xml')
-    
+
     @app.route('/favicon.png')
     def deliver():
         return Response(open(os.path.join(os.path.dirname(__file__),"favicon.png"),"rb").read(),mimetype="image/png")
