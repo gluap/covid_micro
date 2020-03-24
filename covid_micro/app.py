@@ -102,13 +102,15 @@ def predictions(country="Germany"):
         return (datetime.datetime.now() + datetime.timedelta(days=-when(n))).date()
 
     doublingrate = - round(np.log(2) / curve_fit[0], 2) if when(1) is not None else None
-    doublingrate_direct = -np.log(2) / (\
-                np.log(country_data[-3] / country_data[-1]) / ((x[-1] - x[-3]).total_seconds() / 24. / 3600)) if when(1) is not None else None
+    doublingrate_direct = -np.log(2) / ( \
+                np.log(country_data[-3] / country_data[-1]) / ((x[-1] - x[-3]).total_seconds() / 24. / 3600)) if when(
+        1) is not None else None
     try:
         current = get_latest(country)
     except ExtraDataError:
         current = dict()
-    current.update(dict(country=country, t2_direct=doublingrate_direct, t2=doublingrate, date10k=when_date(10000), date100k=when_date(100000),
+    current.update(dict(country=country, t2_direct=doublingrate_direct, t2=doublingrate, date10k=when_date(10000),
+                        date100k=when_date(100000),
                         date1m=when_date(1000000),
                         deaths_per_confirmed=round(country_data_deaths[-1] / country_data[-1], 4)))
     return current
@@ -218,7 +220,8 @@ def estimate_from_daily(country, steps=1):
         if min(country_data[n:n + steps]) < 20:
             continue
         t2 = -np.log(2) / (
-                np.log(country_data[n] / country_data[n + steps]) / ((x[n + steps] - x[n]).total_seconds() / 24. / 3600))
+                np.log(country_data[n] / country_data[n + steps]) / (
+                (x[n + steps] - x[n]).total_seconds() / 24. / 3600))
         if np.abs(t2) < 90000:
             x_new.append(x[n + steps])
             y_new.append(t2)
@@ -240,6 +243,9 @@ def plot_doublingtime_estimates(country):
         ax.set_ylim(0, max(times) + 3)
         ax.plot(dates, times, "g.")
         ax2.plot(dates3, times3, "b.")
+
+        ax.plot(dates[-1:], times[-1:], marker="o", color="black")
+        ax2.plot(dates3[-1:], times3[-1:], marker="o", color="black")
         ax.plot(dates, times, "g-", label="from fit over 5 data points")
         ax2.plot(dates3, times3, "b-", label="$T_2=\\frac{\\mathrm{ln}(2)(t_1-t_0)}{\\mathrm{ln}(n_1/n_0)}$")
         matplotlib.pyplot.setp(ax2.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
@@ -277,10 +283,15 @@ def plot_deathrate_vs_detection(country):
 
     ax.plot(x, country_data_deaths, "b.")
     ax.plot(shifted_x, country_data * 0.008, "g.")
+    ax.plot(shifted_x[-1:], country_data[-1:] * 0.008, marker="o", color="black")
     ax.plot(x, country_data_deaths, "b", label="actual fatalities")
+    ax.plot(x[-1:], country_data_deaths[-1:], "b", marker="o", color="black")
+
     ax.plot(shifted_x, country_data * 0.008, "g-", label="korea style deaths (cases*0.008) shifted + 17.3 days")
     ax.plot(shifted_x, country_data * 0.035, "r-", label="wuhan-style deaths (cases*0.035) shifted + 17.3 days")
     ax.plot(shifted_x, country_data * 0.035, "r.")
+    ax.plot(shifted_x[-1:], country_data[-1:] * 0.035, marker="o", color="black")
+
     ax.fill_between(shifted_x, country_data * 0.008, country_data * 0.035, alpha=0.5,
                     label="range of expected fatalities assuming 100% detection now")
 
@@ -312,6 +323,8 @@ def plot_deaths_per_confirmed(country):
     ax = fig.add_subplot()
 
     ax.plot(x, country_data_deaths / country_data, "b.", label="deaths/confirmed cases")
+
+    ax.plot(x[-1:], country_data_deaths[-1:] / country_data[-1:], marker="o", color="black")
     matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
     ax.grid(True, which="major")
     ax.grid(True, which="minor", linewidth=0.5)
@@ -366,6 +379,7 @@ def get_tld(country):
     except:
         return None
 
+
 def plot(country="Germany"):
     curve_fit, x, country_data, country_data_deaths, country_data_recovered = get_and_fit(country)
 
@@ -389,7 +403,7 @@ def plot(country="Germany"):
     ax.set_yscale('log')
 
     ax.plot(x, country_data, "b.", label="actual detected cases")
-
+    ax.plot(x[-1:], country_data[-1:], marker="o", color="black")
     ax.grid(True, which="major")
     ax.grid(True, which="minor", linewidth=0.5)
 
@@ -398,6 +412,9 @@ def plot(country="Germany"):
     ax.plot(prediction_x, prediction_y, "b-", label="fit")
     ax.plot(x, country_data_deaths / 0.008 * 2 ** (17.3 / 5), "g.", label="estimate from deaths $T_2= 5$ days, p=0.8%")
     ax.plot(x, country_data_deaths / 0.008 * 2 ** (17.3 / 2), "r.", label="estimate from deaths $T_2= 2$ days, p=0.8%")
+
+    ax.plot(x[-1:], country_data_deaths[-1:] / 0.008 * 2 ** (17.3 / 5), marker="o", color="black")
+    ax.plot(x[-1:], country_data_deaths[-1:] / 0.008 * 2 ** (17.3 / 2), marker="o", color="black")
 
     if inhabitants is not None:
         ax.axhline(10 * inhabitants / 100000 / 0.10, color="red", alpha=0.5)
