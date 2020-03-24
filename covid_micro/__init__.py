@@ -97,7 +97,10 @@ HTML = """
 <b>1M infections on</b> {date1m}<BR/>
 <b>deaths/confirmed cases:</b> {deaths_per_confirmed}<BR/></P>
 latest upstream has timestamp {timestamp}: <BR/><B>cases:</B> {cases}<BR/><B>deaths:</B> {deaths}<BR/>
-<IMG SRC="{country}_timeseries.svg"><IMG SRC="{country}_doublingtime.svg">
+FAQ: The number of cases for every date is plotted at 24:00pm of that date. 
+The exact time stamp for each data point is not known, but the last update usually happens shortly after midnight so this is the best
+approximation of when this number of cases was actually measured. 
+<BR><IMG SRC="{country}_timeseries.svg"><IMG SRC="{country}_doublingtime.svg">
 <IMG SRC="{country}_deathrate_shifted.svg">
 <IMG SRC="{country}_death_per_confirmed.svg">
 <P><B>methodology:</B> To evaluate the current doubling time and make the predictions, a linear equation is fit against the logarithm of the five most recent (finished) days of the time
