@@ -102,11 +102,13 @@ def predictions(country="Germany"):
         return (datetime.datetime.now() + datetime.timedelta(days=-when(n))).date()
 
     doublingrate = - round(np.log(2) / curve_fit[0], 2) if when(1) is not None else None
+    doublingrate_direct = -np.log(2) / (\
+                np.log(country_data[-3] / country_data[-1]) / ((x[-1] - x[-3]).total_seconds() / 24. / 3600)) if when(1) is not None else None
     try:
         current = get_latest(country)
     except ExtraDataError:
         current = dict()
-    current.update(dict(country=country, t2=doublingrate, date10k=when_date(10000), date100k=when_date(100000),
+    current.update(dict(country=country, t2_direct=doublingrate_direct, t2=doublingrate, date10k=when_date(10000), date100k=when_date(100000),
                         date1m=when_date(1000000),
                         deaths_per_confirmed=round(country_data_deaths[-1] / country_data[-1], 4)))
     return current
@@ -215,7 +217,7 @@ def estimate_from_daily(country, steps=1):
         if min(country_data[n:n + steps]) < 20:
             continue
         t2 = -np.log(2) / (
-                np.log(country_data[n] / country_data[n + 1]) / ((x[n + 1] - x[n]).total_seconds() / 24. / 3600))
+                np.log(country_data[n] / country_data[n + steps]) / ((x[n + steps] - x[n]).total_seconds() / 24. / 3600))
         if np.abs(t2) < 90000:
             x_new.append(x[n + steps])
             y_new.append(t2)
@@ -224,7 +226,8 @@ def estimate_from_daily(country, steps=1):
 
 def plot_doublingtime_estimates(country):
     times, dates = sliding_window_fit(country)
-    times3, dates3 = estimate_from_daily(country, steps=2)
+    steps_t2_direct = 2
+    times3, dates3 = estimate_from_daily(country, steps=steps_t2_direct)
 
     # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
     fig, axes = matplotlib.pyplot.subplots(nrows=2, ncols=1, sharex=True, sharey=True, figsize=(5, 5), dpi=300)
@@ -252,7 +255,7 @@ def plot_doublingtime_estimates(country):
         ax.set_ylim(0, 2)
         ax.set_xlim(0, 2)
     ax2.set_xlabel("date")
-    ax2.set_ylabel(f"$T_2$ over 2 days")
+    ax2.set_ylabel(f"$T_2$ over {steps_t2_direct} days")
     ax.set_ylabel(f"$T_2$ over 5 days")
 
     bio = BytesIO()
