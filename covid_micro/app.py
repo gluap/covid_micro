@@ -2,13 +2,15 @@ import csv
 import datetime
 import json
 import logging
+import pickle
+from collections import namedtuple
 from io import StringIO, BytesIO
 
 WINDOW = 6
 
 URL_TIMESERIES_CONFIRMED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
 URL_TIMESERIES_DEATHS = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
-#URL_TIMESERIES_RECOVERED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"
+# URL_TIMESERIES_RECOVERED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"
 URL_DAILY_REPORTS = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/{month:02d}-{day:02d}-2020.csv"
 
 URL_ARCGIS_LATEST = "https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases/FeatureServer/1/query?f=json&where=(Confirmed%20%3E%200)&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=Deaths%20desc%2CCountry_Region%20asc%2CProvince_State%20asc&resultOffset=0&resultRecordCount=400&cacheHint=true"
@@ -23,6 +25,38 @@ matplotlib.use('Agg')
 import matplotlib.pyplot
 import numpy as np
 import requests
+
+TSTuple = namedtuple("TSTuple", ['country', 'confirmed', 'deaths'])
+
+
+class TimestampFixer:
+    def __init__(self):
+        try:
+            self.seen_data = pickle.load(open("timestamp_cache", "rb"))
+        except:
+            self.seen_data = {}
+
+    def find_timestamp(self, data, timestamp):
+        if data.country in self.seen_data:
+            if self.seen_data[data.country]['data'] == data:
+                return self.seen_data[data.country]['timestamp']
+            else:
+                self.seen_data[data.country] = {'data': data, 'timestamp': timestamp}
+                self.dump()
+                return timestamp
+        else:
+            self.seen_data[data.country] = {'data': data, 'timestamp': timestamp}
+            self.dump()
+            return timestamp
+
+    def dump(self):
+        try:
+            pickle.dump(self.seen_data, open('timestamp_cache', "wb"))
+        except:
+            pass
+
+
+tsfixer = TimestampFixer()
 
 
 class ExtraDataError(Exception):
@@ -50,6 +84,7 @@ def get_cached(url, cache={}):
 
 
 def get_latest(country):
+    global tsfixer
     jsondata = get_cached(URL_ARCGIS_LATEST).content
     latest = json.loads(jsondata)
     try:
@@ -85,6 +120,7 @@ def get_latest(country):
     #    latest_cases = latest_data['Confirmed']
     #    latest_deaths = latest_data['Deaths']
     #    latest_recovered = latest_data['Recovered']
+    latest_timestamp = tsfixer.find_timestamp(TSTuple(country, latest_cases, latest_deaths), latest_timestamp)
     return dict(deaths=latest_deaths, cases=latest_cases, recovered=latest_recovered, timestamp=latest_timestamp,
                 error=latest_error)
 
@@ -156,8 +192,8 @@ def timeseries_data(country):
     latest = get_latest(country)
 
     country_data_confirmed, data = get_timeseries_from_url(country, URL_TIMESERIES_CONFIRMED)
-#    country_data_recovered, data_recovered = get_timeseries_from_url(country, URL_TIMESERIES_RECOVERED)
-    country_data_recovered=None
+    #    country_data_recovered, data_recovered = get_timeseries_from_url(country, URL_TIMESERIES_RECOVERED)
+    country_data_recovered = None
     country_data_deaths, data_deaths = get_timeseries_from_url(country, URL_TIMESERIES_DEATHS)
     added = 0
     if not latest["error"]:
