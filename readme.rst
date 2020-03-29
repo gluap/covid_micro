@@ -1,6 +1,9 @@
 covid_micro
 ===========
-
+.. image:: https://travis-ci.org/gluap/pyduofern.svg?branch=master
+    :target: https://travis-ci.org/gluap/covid_micro
+.. image:: https://coveralls.io/repos/github/gluap/pyduofern/badge.svg?branch=master
+    :target: https://coveralls.io/github/gluap/covid_micro?branch=master
 quickly hacked python based web service to plot corona virus case numbers.
 
 Fits an exponential to find doubling time etc...
