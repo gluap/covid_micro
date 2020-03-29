@@ -10,7 +10,7 @@ dist:
 #    - python: 3.7
 #      dist: xenial
 #      sudo: true
-install: pip install tox-travis coveralls pytest-vcr
+install: pip install tox-travis coveralls pytest-vcr; pip install -e .
 script:
   - pytest
   - coverage run --source covid_micro -m pytest
