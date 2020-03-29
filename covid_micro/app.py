@@ -382,7 +382,7 @@ def plot_deaths_per_confirmed(country):
     return bio.getvalue()
 
 
-COUNTRY_MAPPING = dict(US="United States of America")
+COUNTRY_MAPPING = {"US":"United States of America", "Korea, South": "Korea (Republic of)"}
 
 
 def get_inhabitants(country):
