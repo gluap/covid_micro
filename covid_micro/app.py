@@ -340,6 +340,8 @@ def plot_deathrate_vs_detection(country):
 
     ax.set_xlim((shifted_x[0], shifted_x[-1]))
 
+    ax.set_yscale('log')
+
     ax.set_ylabel(f"Fatalities (blue line left of shaded area \n => current cases likely underreported)")
 
     bio = BytesIO()
@@ -357,7 +359,6 @@ def plot_deaths_per_confirmed(country):
     # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
     fig = matplotlib.pyplot.figure(dpi=300)
     ax = fig.add_subplot()
-    ax.set_yscale('log')
 
     ax.plot(x, country_data_deaths / country_data, "b.", label="deaths/confirmed cases")
 
