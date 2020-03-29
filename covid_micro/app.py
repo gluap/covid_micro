@@ -330,6 +330,8 @@ def plot_deathrate_vs_detection(country):
 
     ax.fill_between(shifted_x, country_data * 0.008, country_data * 0.035, alpha=0.5,
                     label="range of expected fatalities assuming 100% detection now")
+    
+    ax.set_ylim((1,1e5))
 
     matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
     ax.grid(True, which="major")
