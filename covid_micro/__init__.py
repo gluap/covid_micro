@@ -68,6 +68,7 @@ def create_app():
             HTML_COUNTRIES.format(countries="<LI>".join([f'<a href="{c}.html">{c}</a>' for c in sorted(countries)])))
 
     @app.route('/<country>.html')
+    @app.route('/<country>')
     def html(country="Germany"):
         try:
             data = predictions(country)
@@ -100,6 +101,7 @@ latest upstream has timestamp {timestamp}: <BR/><B>cases:</B> {cases}<BR/><B>dea
 FAQ: The number of cases for every date is plotted at 24:00pm of that date. The black + indicates current-day values.
 they are shown at their indicated timestamp but have some margin of error both in time and in number. For some countries
 it can be better to only look at the "non-black" dots. 
+<br/>Why are these doubling times smaller than reported elsewhere? many sources count the number of days the last doubling took. that means they are less sensitive to the current rate than both methods used here.<br/>
 <BR><IMG SRC="{country}_timeseries.svg"><IMG SRC="{country}_doublingtime.svg">
 <IMG SRC="{country}_deathrate_shifted.svg">
 <IMG SRC="{country}_death_per_confirmed.svg">
