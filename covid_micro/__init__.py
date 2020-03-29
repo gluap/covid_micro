@@ -26,7 +26,7 @@ def create_app():
 
     @app.route('/favicon.png')
     def deliver():
-        return Response(open(os.path.join(os.path.dirname(__file__),"favicon.png"),"rb").read(),mimetype="image/png")
+        return Response(open(os.path.join(os.path.dirname(__file__), "favicon.png"), "rb").read(), mimetype="image/png")
 
     @app.route('/<country>_doublingtime.svg')
     def deliver_plot_doublingtimes(country="Germany", cache={}):

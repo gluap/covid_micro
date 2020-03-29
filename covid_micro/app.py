@@ -310,7 +310,7 @@ def plot_doublingtime_estimates(country):
 
 def plot_deathrate_vs_detection(country):
     country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
-    shift=17.3
+    shift = 17.3
     shifted_x = [d + datetime.timedelta(days=shift) for d in x]
 
     # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
@@ -330,8 +330,8 @@ def plot_deathrate_vs_detection(country):
 
     ax.fill_between(shifted_x, country_data * 0.008, country_data * 0.035, alpha=0.5,
                     label="range of expected fatalities assuming 100% detection now")
-    
-    ax.set_ylim((1,1e5))
+
+    ax.set_ylim((1, 1e5))
 
     matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
     ax.grid(True, which="major")
@@ -355,7 +355,6 @@ def plot_deathrate_vs_detection(country):
 
 def plot_deaths_per_confirmed(country):
     country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
-
 
     # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
     fig = matplotlib.pyplot.figure(dpi=300)
@@ -382,7 +381,7 @@ def plot_deaths_per_confirmed(country):
     return bio.getvalue()
 
 
-COUNTRY_MAPPING = {"US":"United States of America", "Korea, South": "Korea (Republic of)"}
+COUNTRY_MAPPING = {"US": "United States of America", "Korea, South": "Korea (Republic of)"}
 
 
 def get_inhabitants(country):
