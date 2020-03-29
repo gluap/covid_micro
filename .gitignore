@@ -4,3 +4,4 @@ nohup.out
 .coverage
 timestamp_cache
 .pytest-cache
+htmlcov
