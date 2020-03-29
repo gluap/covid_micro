@@ -65,7 +65,7 @@ def create_app():
         data = [row for row in csv.reader(StringIO(r.decode("utf-8")))]
         countries = set([row[1] for row in data])
         return Response(
-            HTML_COUNTRIES.format(countries="<LI>".join([f'<a href="{c}.html">{c}</a>' for c in sorted(countries)])))
+            HTML_COUNTRIES.format(countries="<LI>".join([f'<a href="{c}">{c}</a>' for c in sorted(countries)])))
 
     @app.route('/<country>.html')
     @app.route('/<country>')
