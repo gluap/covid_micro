@@ -27,10 +27,6 @@ setup(name='covid_micro',
       zip_safe=False,
       include_package_data=False,
 
-      tests_require=[
-          'tox', 'pytest'
-      ],
-
       entry_points={'console_scripts': ['app=covid_micro.app:main']},
       long_description=open('readme.rst', 'r').read()
       )
