@@ -8,8 +8,6 @@ from flask import Flask, Response
 from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CONFIRMED, \
     plot_doublingtime_estimates, plot_deathrate_vs_detection, plot_deaths_per_confirmed
 
-__version__ = 0.1
-
 
 def create_app():
     app = Flask(__name__)
