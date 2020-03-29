@@ -310,7 +310,7 @@ def plot_doublingtime_estimates(country):
 
 def plot_deathrate_vs_detection(country):
     country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
-    shift=11.0
+    shift=17.3
     shifted_x = [d + datetime.timedelta(days=shift) for d in x]
 
     # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
@@ -338,7 +338,7 @@ def plot_deathrate_vs_detection(country):
     ax.grid(True, which="minor", linewidth=0.5)
     ax.grid(True, which="major")
     ax.grid(True, which="minor", linewidth=0.5)
-    ax.legend(loc=2)
+    ax.legend(loc=4)
 
     ax.set_xlim((shifted_x[0], shifted_x[-1]))
 
@@ -371,7 +371,7 @@ def plot_deaths_per_confirmed(country):
     ax.grid(True, which="minor", linewidth=0.5)
     ax.legend(loc=2)
 
-    ax.set_xlim(x[0], x[-1]))
+    ax.set_xlim((x[0], x[-1]))
 
     ax.set_ylabel(f"deaths / confirmed cases")
 
