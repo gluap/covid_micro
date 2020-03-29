@@ -1,0 +1,19 @@
+sudo: false
+language: python
+python:
+  - "3.8"
+
+dist:
+  bionic
+#matrix:
+#  include:
+#    - python: 3.7
+#      dist: xenial
+#      sudo: true
+install: pip install tox-travis coveralls pytest-vcr
+script:
+  - pytest
+  - coverage run --source covid_micro -m pytest
+  - coverage report -m
+after_success:
+  - coveralls
