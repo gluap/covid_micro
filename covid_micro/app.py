@@ -352,11 +352,12 @@ def plot_deathrate_vs_detection(country):
 def plot_deaths_per_confirmed(country):
     country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
 
-    shifted_x = [d + datetime.timedelta(days=17.3) for d in x]
+    shifted_x = [d + datetime.timedelta(days=11.0) for d in x]
 
     # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
     fig = matplotlib.pyplot.figure(dpi=300)
     ax = fig.add_subplot()
+    ax.set_yscale('log')
 
     ax.plot(x, country_data_deaths / country_data, "b.", label="deaths/confirmed cases")
 
