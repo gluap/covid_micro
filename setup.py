@@ -22,6 +22,7 @@ setup(name='covid_micro',
       packages=['covid_micro'],
 
       install_requires=["flask", "numpy", "matplotlib", "scipy", "requests"],
+      tests_require=["pytest","pytest-vcr"],
 
       zip_safe=False,
       include_package_data=False,
