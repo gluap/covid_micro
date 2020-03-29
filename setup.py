@@ -1,9 +1,9 @@
 # coding=utf-8
-from covid_micro import __version__ as version
+#from covid_micro import __version__ as version
 from setuptools import setup
 
 setup(name='covid_micro',
-      version=version,
+      version=0.1,
       description='Small microservice for plotting current corona virus spread',
       classifiers=[
           'Development Status :: 3 - Alpha',
