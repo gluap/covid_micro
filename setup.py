@@ -21,7 +21,7 @@ setup(name='covid_micro',
 
       packages=['covid_micro'],
 
-      install_requires=["flask", "numpy", "matplotlib", "scipy", "requests"],
+      install_requires=["flask", "numpy", "matplotlib", "scipy", "requests", "Flask-APScheduler"],
       tests_require=["pytest","pytest-vcr"],
 
       zip_safe=False,

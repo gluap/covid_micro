@@ -5,12 +5,32 @@ from io import StringIO
 
 from flask import Flask, Response
 
+from flask_apscheduler import APScheduler
+
+
 from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CONFIRMED, \
-    plot_doublingtime_estimates, plot_deathrate_vs_detection, plot_deaths_per_confirmed
+    plot_doublingtime_estimates, plot_deathrate_vs_detection, plot_deaths_per_confirmed, load_countries
 
 
 def create_app():
     app = Flask(__name__)
+
+    class Config(object):
+        SCHEDULER_API_ENABLED = True
+        JOBS = [
+            {
+                'id': 'load_countries',
+                'func': load_countries,
+                'trigger': 'interval',
+                'seconds': 2
+            }
+        ]
+
+    app.config.from_object(Config())
+
+    scheduler = APScheduler()
+    scheduler.init_app(app)
+    scheduler.start()
 
     @app.route('/<country>_timeseries.svg')
     def deliver_plot(country="Germany", cache={}):

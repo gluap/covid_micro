@@ -418,6 +418,18 @@ def get_tld(country):
         return None
 
 
+def load_countries():
+    logger.info("loading countries to fill cache {}".format(datetime.datetime.now()))
+    r = get_cached(URL_TIMESERIES_CONFIRMED).content
+    data = [row for row in csv.reader(StringIO(r.decode("utf-8")))]
+    countries = set([row[1] for row in data])
+    for country in countries:
+        try:
+            get_latest(country)
+        except:
+            pass
+
+
 def plot(country="Germany"):
     curve_fit, x, country_data, country_data_deaths, country_data_recovered = get_and_fit(country)
 
