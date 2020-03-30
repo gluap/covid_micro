@@ -22,7 +22,7 @@ def create_app():
                 'id': 'load_countries',
                 'func': load_countries,
                 'trigger': 'interval',
-                'seconds': 2
+                'seconds': 900
             }
         ]
 
