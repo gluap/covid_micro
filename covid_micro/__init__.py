@@ -9,7 +9,7 @@ from flask_apscheduler import APScheduler
 
 
 from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CONFIRMED, \
-    plot_doublingtime_estimates, plot_deathrate_vs_detection, plot_deaths_per_confirmed, load_countries
+    plot_doublingtime_estimates, plot_deathrate_vs_detection, plot_deaths_per_confirmed, load_countries, plot_daily_infected
 
 
 def create_app():
@@ -76,6 +76,14 @@ def create_app():
                               'timestamp': datetime.datetime.now()}
         return Response(cache[country]['data'], mimetype='image/svg+xml')
 
+    @app.route('/<country>_daily_infected.svg')
+    def deliver_daily_infected(country="Germany", cache={}):
+        if country not in cache or (
+                datetime.datetime.now() - cache[country]['timestamp'] > datetime.timedelta(minutes=15)):
+            cache[country] = {'data': (plot_daily_infected(country)),
+                              'timestamp': datetime.datetime.now()}
+        return Response(cache[country]['data'], mimetype='image/svg+xml')
+
     @app.route('/')
     @app.route('/index.html')
     def index():
@@ -122,7 +130,7 @@ it can be better to only look at the "non-black" dots.
 <br/>Why are these doubling times smaller than reported elsewhere? many sources count the number of days the last doubling took. that means they are less sensitive to the current rate than both methods used here.<br/>
 <BR><IMG SRC="{country}_timeseries.svg"><IMG SRC="{country}_doublingtime.svg">
 <IMG SRC="{country}_deathrate_shifted.svg">
-<IMG SRC="{country}_death_per_confirmed.svg">
+<IMG SRC="{country}_death_per_confirmed.svg"><IMG SRC="{country}_daily_infected.svg">
 <P><B>methodology:</B> To evaluate the current doubling time and make the predictions, a linear equation is fit against the logarithm of the five most recent (finished) days of the time
 series data.<BR/>To evaluate the doubling time trend over time, the fit is repeated for chunks of five days.</P>
 

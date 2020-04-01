@@ -486,3 +486,20 @@ def plot(country="Germany"):
     fig.savefig(bio, format="svg")
     matplotlib.pyplot.close(fig)
     return bio.getvalue()
+
+
+def plot_daily_infected(country):
+    curve_fit, x, country_data, country_data_deaths, country_data_recovered = get_and_fit(country)
+    hist_data = country_data[1:-2] - country_data[:-3]
+    x = x[1:-2]
+    fig = matplotlib.pyplot.figure(dpi=300, figsize=(5,2.5))
+    ax = fig.add_subplot(1, 1, 1)
+    ax.bar(x, hist_data, color="grey", label="actual detected cases")
+    ax.set_xlabel("date")
+    ax.set_ylabel(f"daily infections")
+    bio = BytesIO()
+    FigureCanvas(fig)
+    fig.savefig(bio, format="svg")
+    matplotlib.pyplot.close(fig)
+    return bio.getvalue()
+
