@@ -59,10 +59,14 @@ def test_plots(country):
     p2 = app.plot_deathrate_vs_detection(country)
     p3 = app.plot_doublingtime_estimates(country)
     p4 = app.plot_deaths_per_confirmed(country)
+    p5 = app.plot_daily_infected(country)
+
     assert p1.startswith(b"<?xml version")
     assert p2.startswith(b"<?xml version")
     assert p3.startswith(b"<?xml version")
     assert p4.startswith(b"<?xml version")
+    assert p5.startswith(b"<?xml version")
+
 
 
 def test_get_tld():
