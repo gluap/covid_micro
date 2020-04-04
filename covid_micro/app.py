@@ -250,7 +250,6 @@ def sliding_window_fit(country):
 
 def estimate_from_daily(country, steps=1):
     country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
-    country_data_
     x_new = []
     y_new = []
     for n in range(len(country_data) - steps):
