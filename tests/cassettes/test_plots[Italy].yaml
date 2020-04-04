@@ -1,0 +1,61 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.23.0
+    method: GET
+    uri: https://restcountries.eu/rest/v2/name/Italy
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA2xTzW4TMRB+lei7YiWbLo1a30IJAgl6SJteoghNNu7Glddeeb2VStVL4NiXACFV
+        KrwDh75EUG/kRdB4twmV2MNqfr75Zvx5PL2GpUJB4l0gcwWB4Mr36lKZ164gbSGn6OqAmQCZckl7
+        R24R0adoI+k2MoRARsZom3Os4tr0kEszKnUgA4mxK1SsDCelitAIi3Q8gSbbGauynhudQSCabFNH
+        N1liPq9y7SwkRrV3JRNW9XwbPHF1WCpvO9ts6craUIjpQTIY7O/v9wUMBWNzyOnLve5B2nyiv7Nn
+        AgtVOHtVtPJosjy7VwSZJv00HXQTgVxbDdnYQRfqk7PN2SenRy+SvkwSHnnu/EL5GB9O+LRvxqzX
+        yYcx/8+OIXD0dgSBs+Ep4y0FfamOd3ejCQK2LpTXWSt5epCw5LX3ymY6Nr1G1uRGEyZu75aFYJGu
+        irnjW/iz+ombGStg85rytlJXbpAefuxDQgeIJ38v+rRj20nxnyGti8zBk60aySvIayy2CMWF3HF3
+        qnO/TULggiCxWX3frH5tPt9vVt94lPAvft7gH742bhmeudY8YR9+QGC5Jb+IvZh9ffd4u75f3/3+
+        8ni7vsONwLmhHBLLEMpK9npeVSFztQ1eq6qr6t6CAvV0oG51meNpAcm8Mi5rxKPMt5symjwXvlRk
+        OxPLyyfgeDOHDZYLZ22INYw+i5dpl7Uv6mb2FwAA//8DAD++zAeiAwAA
+    headers:
+      Access-Control-Allow-Headers:
+      - Accept, X-Requested-With
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 57eae933e8b0c2a9-FRA
+      Cache-Control:
+      - public, max-age=86400
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Sat, 04 Apr 2020 12:07:46 GMT
+      Expect-CT:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - __cfduid=d1019d72b4b373d8452256fd1af73039a1586002066; expires=Mon, 04-May-20
+        12:07:46 GMT; path=/; domain=.restcountries.eu; HttpOnly; SameSite=Lax
+      Transfer-Encoding:
+      - chunked
+    status:
+      code: 200
+      message: ''
+version: 1

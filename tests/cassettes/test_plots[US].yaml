@@ -1,0 +1,65 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.23.0
+    method: GET
+    uri: https://restcountries.eu/rest/v2/name/United%20States%20of%20America
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA3RUTU/bQBD9K6tRpR5wgpNQIL65CZwoF6CthKJqYw/Ogr0b7a4jtYgLlH5IVOq9
+        J7hEUFVVf0B7of0PTjlGSP0Z1djOh6r0Nvu88/bNvBnvH4PkCYIHe1JYDNmO5RYNUwfMT1CLgIMD
+        VvW3cIBxWyVcSPD2oZoa6DjA436P11sqzAl2oEQaU8QHBwIex0JGhBnKrVFmwPvC8hg8eMZNT8jI
+        KumwdrVVzUnsTh/zrDwjZy7I/quy44DGSCgJHpSYAQdM2p3C20rbHmo5V1lf9dOY2/x7o95orqy5
+        rutAzG0sI/D2G+tV16k016pux4EQEyVfJrMHJGnVyMFrrtabbrNWdR2IhBTgrVAiWJHgKyWLuvd2
+        W5Va3XNdKoPi2lzszmK3ORevz8Vrc/HqXPxoLl6ZxktznEvFux0HukqHqHM9LX8bHHiy8Zxwya0Y
+        4PaCUQAHZJrXW7q6vkKsQao1ykDktR1DMHG8TfcXTVSo4phrsuRl0lXk/AM46VCvZZTyqOQRRq02
+        mi9q4AFSe8tzPT9HM+4NGcXC9OAf5ROYiK3m0hTmGvCOIRf4FDUKKSKLpItblGygyok4ookgHbBh
+        LA+VYXtShIo6cKDBg9v3lltT2ZOCoEMOHoxPr8Znl+Ozm/Hp5/uP7/5cvrn/9J1kW/CAChfEYQVr
+        P5wNXVcveqJvF6EyLkVLEYVY9JL60iOOnUMMhTxEiUUBPz8cIWvrXz/4AEk0KcyGdxfZcPQ6G2Y3
+        bHSe3WRfsq+jtyy7Gp1n3+4ufl9nQzhx4CDmEXjQs7ZvvOVljcYGKpVWCzRVTJdDbvlyanjVDMiG
+        Yql4/DhWQeEcD3S5Hdv+5q4/sypfu8nOSbapEdmu5iEyP9KICUoLDihaTb/gIMJOCZGx+bjuak69
+        YSGyLdHVyFoqQR2IHPGT22uiZyHGjB6k+v0gUDqcJlRur4MelxHShbAySRESOjQugVBB+c866fwF
+        AAD//wMAEOqegxcFAAA=
+    headers:
+      Access-Control-Allow-Headers:
+      - Accept, X-Requested-With
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 57eae91eff3b63cb-FRA
+      Cache-Control:
+      - public, max-age=86400
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Sat, 04 Apr 2020 12:07:43 GMT
+      Expect-CT:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - __cfduid=d43ad2d8918f3c77bef57c21b18d30c901586002063; expires=Mon, 04-May-20
+        12:07:43 GMT; path=/; domain=.restcountries.eu; HttpOnly; SameSite=Lax
+      Transfer-Encoding:
+      - chunked
+    status:
+      code: 200
+      message: ''
+version: 1

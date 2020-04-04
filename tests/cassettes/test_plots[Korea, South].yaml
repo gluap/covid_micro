@@ -1,0 +1,62 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.23.0
+    method: GET
+    uri: https://restcountries.eu/rest/v2/name/Korea%20(Republic%20of)
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA2xTQWsTQRT+K8s7KY6b3aS17dw0erGikiiCJchkd7KZZnZmmZ2ptCEgonjpRaRe
+        LHgRSg9FhfZWvRT/Q6o3oYKt/Q/yJptaxeN8877vfe+bN0tDUCznQGFRG86CCy1euK4USaB7F4GA
+        1cUtvsLldZ0zoYAuQTgw0CHAZNFn9aZOPbcFFdKYIncQSpiUQmWIlcidryM1YYWwTAKFNtdOeqpt
+        F9zX+jqvd85J4M0h1/BMaAUUrpaCAYHSdc+gG6y03Kiguip04SSz/m42mo/imWiWgGRWqgzoUmMu
+        jEhcnwtnOwRSnmu1mqMl7Wx/0k+hM+xL4yiqx1EYEciEEkAbcdggYEXO17SajHb/XvNStECjCF12
+        tUm58fjd1iIiilmxwm9Poj5Zf3K6sXnyfv94bwcIKJdzI5IquZk4wuScMVwlwosPIZnm/ADrJyrn
+        nQaPNbotV/OuxmC/P92GUQenVZljWaUiSn2lsfAoBgoDDWR6rvuz+aN8Nv1frk83No/3dn693vXK
+        1jBVTuItgQ7B+2sf7KcD/1QEsCc0/VKlXAZthw16ZgIebPMgdUHbpUBgmQGFo3dbP9+++vHh5dGb
+        T2jN/sPGwm7F5oIFqQ7afncK+x9QYQgPnUgvL1Z2+si96b58VsxntoxgDzt/3R5/PHwRjHcPn4+3
+        Dp99W4cRgZ5kGVDoW1uUtFYzvLSJdsoawcuQu1rKLKsNtAnLlQyma8nkNakTzBq3XOik+gijzm8A
+        AAD//wMAnDpV5GcDAAA=
+    headers:
+      Access-Control-Allow-Headers:
+      - Accept, X-Requested-With
+      Access-Control-Allow-Methods:
+      - GET
+      Access-Control-Allow-Origin:
+      - '*'
+      CF-Cache-Status:
+      - DYNAMIC
+      CF-RAY:
+      - 57eae93ed8c3640d-FRA
+      Cache-Control:
+      - public, max-age=86400
+      Connection:
+      - keep-alive
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Sat, 04 Apr 2020 12:07:48 GMT
+      Expect-CT:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - __cfduid=d813b8c47ec27e1115828fd8fef2228491586002068; expires=Mon, 04-May-20
+        12:07:48 GMT; path=/; domain=.restcountries.eu; HttpOnly; SameSite=Lax
+      Transfer-Encoding:
+      - chunked
+    status:
+      code: 200
+      message: ''
+version: 1
