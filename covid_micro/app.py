@@ -260,8 +260,8 @@ def sliding_window_fit(country, subtract_inactive=False):
     return times, dates
 
 
-def estimate_from_daily(country, steps=1):
-    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
+def estimate_from_daily(country, steps=1, subtract_inactive=False):
+    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country, subtract_inactive)
     x_new = []
     y_new = []
     for n in range(len(country_data) - steps):
@@ -278,8 +278,12 @@ def estimate_from_daily(country, steps=1):
 
 def plot_doublingtime_estimates(country):
     times, dates = sliding_window_fit(country)
+    times_, dates_ = sliding_window_fit(country, subtract_inactive=True)
+
     steps_t2_direct = 2
     times3, dates3 = estimate_from_daily(country, steps=steps_t2_direct)
+
+    times3_, dates3_ = estimate_from_daily(country, steps=steps_t2_direct, subtract_inactive=True)
     country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
 
     hist_data = country_data[1:-2] - country_data[:-3]
@@ -301,9 +305,12 @@ def plot_doublingtime_estimates(country):
         ax3.bar(x, hist_data - hist_data_recovered, color="grey", alpha=0.5, label="new cases - recovered cases")
         ax3.set_ylabel("new cases")
 
-        ax.set_ylim(0, max(times) + 3)
+        ax.set_ylim(min(min(times_),min(times)) - 3, max(max(times_),max(times)) + 3)
         ax.plot(dates, times, "g.")
         ax2.plot(dates3, times3, "b.")
+
+        ax.plot(dates_, times_, "g:", alpha=1, label="only active cases")
+        ax2.plot(dates3_, times3_, "b:", alpha=1, label="only active cases")
 
         ax.plot(dates[-1:], times[-1:], marker="+", color="black")
         ax2.plot(dates3[-1:], times3[-1:], marker="+", color="black")
@@ -459,6 +466,9 @@ def load_countries():
 
 def plot(country="Germany"):
     curve_fit, x, country_data, country_data_deaths, country_data_recovered = get_and_fit(country)
+    curve_fit_, x_, country_data_, country_data_deaths_, country_data_recovered_ = get_and_fit(country,
+                                                                                               subtract_inactive=True)
+
 
     inhabitants = get_inhabitants(country)
 
@@ -479,7 +489,9 @@ def plot(country="Germany"):
     ax = fig.add_subplot(1, 1, 1)
     ax.set_yscale('log')
 
-    ax.plot(x, country_data, "b.", label="actual detected cases")
+    ax.plot(x, country_data, "b.", label="reported cases")
+    ax.plot(x, country_data_, "b:", label="reported active cases")
+
     ax.plot(x[-1:], country_data[-1:], marker="+", color="black")
     ax.grid(True, which="major")
     ax.grid(True, which="minor", linewidth=0.5)
