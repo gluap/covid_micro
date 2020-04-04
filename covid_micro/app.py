@@ -10,7 +10,7 @@ WINDOW = 6
 
 URL_TIMESERIES_CONFIRMED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
 URL_TIMESERIES_DEATHS = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
-# URL_TIMESERIES_RECOVERED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"
+URL_TIMESERIES_RECOVERED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"
 URL_DAILY_REPORTS = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/{month:02d}-{day:02d}-2020.csv"
 
 URL_ARCGIS_LATEST = "https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases/FeatureServer/1/query?f=json&where=(Confirmed%20%3E%200)&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=Deaths%20desc%2CCountry_Region%20asc%2CProvince_State%20asc&resultOffset=0&resultRecordCount=400&cacheHint=true"
@@ -192,8 +192,8 @@ def timeseries_data(country):
     latest = get_latest(country)
 
     country_data_confirmed, data = get_timeseries_from_url(country, URL_TIMESERIES_CONFIRMED)
-    #    country_data_recovered, data_recovered = get_timeseries_from_url(country, URL_TIMESERIES_RECOVERED)
-    country_data_recovered = None
+    country_data_recovered, data_recovered = get_timeseries_from_url(country, URL_TIMESERIES_RECOVERED)
+    #country_data_recovered = None
     country_data_deaths, data_deaths = get_timeseries_from_url(country, URL_TIMESERIES_DEATHS)
     added = 0
     if not latest["error"]:
@@ -250,6 +250,7 @@ def sliding_window_fit(country):
 
 def estimate_from_daily(country, steps=1):
     country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
+    country_data_
     x_new = []
     y_new = []
     for n in range(len(country_data) - steps):
@@ -268,6 +269,13 @@ def plot_doublingtime_estimates(country):
     times, dates = sliding_window_fit(country)
     steps_t2_direct = 2
     times3, dates3 = estimate_from_daily(country, steps=steps_t2_direct)
+    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
+
+
+    hist_data = country_data[1:-2] - country_data[:-3]
+    hist_data_deaths = country_data_deaths[1:-2] - country_data_deaths[:-3]
+
+    x = x[1:-2]
 
     # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
     fig, axes = matplotlib.pyplot.subplots(nrows=2, ncols=1, sharex=True, sharey=True, figsize=(5, 5), dpi=300)
@@ -276,6 +284,13 @@ def plot_doublingtime_estimates(country):
     ax = axes[0]  # fig.add_subplot(211)
 
     if len(times) > 2:
+        ax4 = ax.twinx()
+        ax4.bar(x, hist_data, color="grey", alpha=0.5, label="new cases")
+        ax4.set_ylabel("new cases")
+        ax3 = ax2.twinx()
+        ax3.bar(x, hist_data, color="grey", alpha=0.5, label="new cases")
+        ax3.set_ylabel("new cases")
+
         ax.set_ylim(0, max(times) + 3)
         ax.plot(dates, times, "g.")
         ax2.plot(dates3, times3, "b.")
@@ -291,6 +306,8 @@ def plot_doublingtime_estimates(country):
         ax.grid(True, which="minor", linewidth=0.5)
         ax2.legend(loc=2)
         ax.legend(loc=2)
+        ax3.legend(loc="lower left")
+        ax4.legend(loc="lower left")
 
     else:
         ax.text(0, 1, "Not enough data")
@@ -491,15 +508,27 @@ def plot(country="Germany"):
 def plot_daily_infected(country):
     curve_fit, x, country_data, country_data_deaths, country_data_recovered = get_and_fit(country)
     hist_data = country_data[1:-2] - country_data[:-3]
+    hist_data_deaths = country_data_deaths[1:-2] - country_data_deaths[:-3]
+
     x = x[1:-2]
-    fig = matplotlib.pyplot.figure(dpi=300, figsize=(5,2.5))
+    fig = matplotlib.pyplot.figure(dpi=300, figsize=(5, 2.5))
     ax = fig.add_subplot(1, 1, 1)
-    ax.bar(x, hist_data, color="grey", label="actual detected cases")
+    #    ax.bar(x, hist_data, color="grey", label="new cases")
+    #    ax2 = fig.add_subplot(2, 1, 2)
+    ax.bar(x, hist_data_deaths, color="black", label="deaths")
+
     ax.set_xlabel("date")
-    ax.set_ylabel(f"daily infections")
-    bio = BytesIO()
+
+    ax.set_ylabel(f"daily deaths")
+    ax.legend(loc=2)
+
+    matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
+
+    #    ax2.legend(loc=3)
+    #    ax2.set_ylabel("daily deaths")
     FigureCanvas(fig)
+    bio = BytesIO()
+
     fig.savefig(bio, format="svg")
     matplotlib.pyplot.close(fig)
     return bio.getvalue()
-
