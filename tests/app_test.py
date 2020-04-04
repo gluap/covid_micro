@@ -68,7 +68,7 @@ def test_plots(country):
     assert p5.startswith(b"<?xml version")
 
 
-
+@pytest.mark.vcr()
 def test_get_tld():
     de = app.get_tld("Germany")
-    assert de == de
+    assert de == ".de"
