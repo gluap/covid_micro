@@ -35,7 +35,7 @@ interactions:
       CF-Cache-Status:
       - DYNAMIC
       CF-RAY:
-      - 57eae933e8b0c2a9-FRA
+      - 57ed67928812d6e5-FRA
       Cache-Control:
       - public, max-age=86400
       Connection:
@@ -45,14 +45,14 @@ interactions:
       Content-Type:
       - application/json;charset=utf-8
       Date:
-      - Sat, 04 Apr 2020 12:07:46 GMT
+      - Sat, 04 Apr 2020 19:23:34 GMT
       Expect-CT:
       - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
       Server:
       - cloudflare
       Set-Cookie:
-      - __cfduid=d1019d72b4b373d8452256fd1af73039a1586002066; expires=Mon, 04-May-20
-        12:07:46 GMT; path=/; domain=.restcountries.eu; HttpOnly; SameSite=Lax
+      - __cfduid=df6fce4b5aa9c5c7b5d9b7062a96c93131586028214; expires=Mon, 04-May-20
+        19:23:34 GMT; path=/; domain=.restcountries.eu; HttpOnly; SameSite=Lax
       Transfer-Encoding:
       - chunked
     status:
