@@ -118,8 +118,8 @@ HTML = """
 <body>
 <h1>{country}</h1><BR/>
 <A HREF="index.html">list of countries</A>
-<P><b>Doubling time (5 days via fit):</b> {t2} Days<BR/>
-<b>Doubling time (2 days via increase): </b>{t2_direct} Days<BR/>
+<P><b>Doubling time (5 days via fit):</b> {t2} Days ({t2_full} for active cases)<BR/>
+<b>Doubling time (2 days via increase): </b>{t2_direct} Days ({t2_full_direct} for active cases) <BR/>
 <b>100k infections on</b> {date100k}<BR/>
 <b>1M infections on</b> {date1m}<BR/>
 <b>deaths/confirmed cases:</b> {deaths_per_confirmed}<BR/></P>

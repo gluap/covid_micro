@@ -10,7 +10,7 @@ WINDOW = 6
 
 URL_TIMESERIES_CONFIRMED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
 URL_TIMESERIES_DEATHS = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
-URL_TIMESERIES_RECOVERED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv"
+URL_TIMESERIES_RECOVERED = "https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv"
 URL_DAILY_REPORTS = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/{month:02d}-{day:02d}-2020.csv"
 
 URL_ARCGIS_LATEST = "https://services1.arcgis.com/0MSEUqKaxRlEPj5g/arcgis/rest/services/ncov_cases/FeatureServer/1/query?f=json&where=(Confirmed%20%3E%200)&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=Deaths%20desc%2CCountry_Region%20asc%2CProvince_State%20asc&resultOffset=0&resultRecordCount=400&cacheHint=true"
@@ -127,6 +127,8 @@ def get_latest(country):
 
 def predictions(country="Germany"):
     curve_fit, x, country_data, country_data_deaths, country_data_recovered = get_and_fit(country)
+    curve_fit_, x_, country_data_, country_data_deaths_, country_data_recovered_ = get_and_fit(country,
+                                                                                               subtract_inactive=True)
 
     def when(l):
         try:
@@ -138,22 +140,29 @@ def predictions(country="Germany"):
         return (datetime.datetime.now() + datetime.timedelta(days=-when(n))).date()
 
     doublingrate = - round(np.log(2) / curve_fit[0], 2) if when(1) is not None else None
-    doublingrate_direct = -np.log(2) / ( \
-                np.log(country_data[-3] / country_data[-1]) / ((x[-1] - x[-3]).total_seconds() / 24. / 3600)) if when(
+    doublingrate_ = - round(np.log(2) / curve_fit_[0], 2) if when(1) is not None else None
+
+    doublingrate_direct = -np.log(2) / (
+            np.log(country_data[-3] / country_data[-1]) / ((x[-1] - x[-3]).total_seconds() / 24. / 3600)) if when(
         1) is not None else None
+
+    doublingrate_direct_ = -np.log(2) / (np.log(country_data_[-3] / country_data_[-1]) / (
+            (x_[-1] - x_[-3]).total_seconds() / 24. / 3600)) if when(1) is not None else None
+
     try:
         current = get_latest(country)
     except ExtraDataError:
         current = dict()
-    current.update(dict(country=country, t2_direct=doublingrate_direct, t2=doublingrate, date10k=when_date(10000),
+    current.update(dict(country=country, t2_direct=round(doublingrate_direct), t2=doublingrate, t2_full_direct=round(doublingrate_direct_,2), t2_full=round(doublingrate_,2), date10k=when_date(10000),
                         date100k=when_date(100000),
                         date1m=when_date(1000000),
                         deaths_per_confirmed=round(country_data_deaths[-1] / country_data[-1], 4)))
     return current
 
 
-def get_and_fit(country):
-    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
+def get_and_fit(country, subtract_inactive=False):
+    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country,
+                                                                                                       subtract_inactive)
     try:
         curve_fit = np.ma.polyfit(x_data, log_y_data, 1)
     except TypeError:
@@ -188,12 +197,12 @@ def exact_timeseries():
     return ("bla")
 
 
-def timeseries_data(country):
+def timeseries_data(country, subtract_inactive=False):
     latest = get_latest(country)
 
     country_data_confirmed, data = get_timeseries_from_url(country, URL_TIMESERIES_CONFIRMED)
     country_data_recovered, data_recovered = get_timeseries_from_url(country, URL_TIMESERIES_RECOVERED)
-    #country_data_recovered = None
+    # country_data_recovered = None
     country_data_deaths, data_deaths = get_timeseries_from_url(country, URL_TIMESERIES_DEATHS)
     added = 0
     if not latest["error"]:
@@ -202,7 +211,9 @@ def timeseries_data(country):
         country_data_deaths = np.append(country_data_deaths, latest["deaths"])
         addded = 1
 
-    country_data_active = country_data_confirmed  # - country_data_deaths - country_data_recovered
+    country_data_active = country_data_confirmed
+    if subtract_inactive:
+        country_data_active = country_data_confirmed - country_data_deaths - country_data_recovered
 
     x = [datetime.datetime.strptime(d, '%m/%d/%y') + datetime.timedelta(days=1) for d in data[0][4:]]
 
@@ -232,8 +243,9 @@ def get_timeseries_from_url(country, url):
     return country_data, data
 
 
-def sliding_window_fit(country):
-    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
+def sliding_window_fit(country, subtract_inactive=False):
+    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country,
+                                                                                                       subtract_inactive)
     times = []
     dates = []
     for i in range(0, len(x) - WINDOW + 1):
@@ -270,9 +282,8 @@ def plot_doublingtime_estimates(country):
     times3, dates3 = estimate_from_daily(country, steps=steps_t2_direct)
     country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
 
-
     hist_data = country_data[1:-2] - country_data[:-3]
-    hist_data_deaths = country_data_deaths[1:-2] - country_data_deaths[:-3]
+    hist_data_recovered = country_data_recovered[1:-2] - country_data_recovered[:-3]
 
     x = x[1:-2]
 
@@ -287,7 +298,7 @@ def plot_doublingtime_estimates(country):
         ax4.bar(x, hist_data, color="grey", alpha=0.5, label="new cases")
         ax4.set_ylabel("new cases")
         ax3 = ax2.twinx()
-        ax3.bar(x, hist_data, color="grey", alpha=0.5, label="new cases")
+        ax3.bar(x, hist_data - hist_data_recovered, color="grey", alpha=0.5, label="new cases - recovered cases")
         ax3.set_ylabel("new cases")
 
         ax.set_ylim(0, max(times) + 3)
@@ -506,7 +517,7 @@ def plot(country="Germany"):
 
 def plot_daily_infected(country):
     curve_fit, x, country_data, country_data_deaths, country_data_recovered = get_and_fit(country)
-    hist_data = country_data[1:-2] - country_data[:-3]
+    hist_data_recovered = country_data_recovered[1:-2] - country_data_recovered[:-3]
     hist_data_deaths = country_data_deaths[1:-2] - country_data_deaths[:-3]
 
     x = x[1:-2]
