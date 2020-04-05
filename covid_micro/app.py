@@ -153,7 +153,9 @@ def predictions(country="Germany"):
         current = get_latest(country)
     except ExtraDataError:
         current = dict()
-    current.update(dict(country=country, t2_direct=round(doublingrate_direct), t2=doublingrate, t2_full_direct=round(doublingrate_direct_,2), t2_full=round(doublingrate_,2), date10k=when_date(10000),
+    current.update(dict(country=country, t2_direct=round(doublingrate_direct), t2=doublingrate,
+                        t2_full_direct=round(doublingrate_direct_, 2), t2_full=round(doublingrate_, 2),
+                        date10k=when_date(10000),
                         date100k=when_date(100000),
                         date1m=when_date(1000000),
                         deaths_per_confirmed=round(country_data_deaths[-1] / country_data[-1], 4)))
@@ -261,7 +263,8 @@ def sliding_window_fit(country, subtract_inactive=False):
 
 
 def estimate_from_daily(country, steps=1, subtract_inactive=False):
-    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country, subtract_inactive)
+    country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country,
+                                                                                                       subtract_inactive)
     x_new = []
     y_new = []
     for n in range(len(country_data) - steps):
@@ -286,8 +289,11 @@ def plot_doublingtime_estimates(country):
     times3_, dates3_ = estimate_from_daily(country, steps=steps_t2_direct, subtract_inactive=True)
     country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
 
+    curve_fit_, x_, country_data_, country_data_deaths_, country_data_recovered_ = get_and_fit(country,
+                                                                                               subtract_inactive=True)
+
     hist_data = country_data[1:-2] - country_data[:-3]
-    hist_data_recovered = country_data_recovered[1:-2] - country_data_recovered[:-3]
+    hist_data_ = country_data_[1:-2] - country_data_[:-3]
 
     x = x[1:-2]
 
@@ -302,10 +308,10 @@ def plot_doublingtime_estimates(country):
         ax4.bar(x, hist_data, color="grey", alpha=0.5, label="new cases")
         ax4.set_ylabel("new cases")
         ax3 = ax2.twinx()
-        ax3.bar(x, hist_data - hist_data_recovered, color="grey", alpha=0.5, label="new cases - recovered cases")
+        ax3.bar(x, hist_data_, color="grey", alpha=0.5, label="active cases")
         ax3.set_ylabel("new cases")
 
-        ax.set_ylim(min(min(times_),min(times)) - 3, max(max(times_),max(times)) + 3)
+        ax.set_ylim(min(min(times_), min(times)) - 3, max(max(times_), max(times)) + 3)
         ax.plot(dates, times, "g.")
         ax2.plot(dates3, times3, "b.")
 
@@ -468,7 +474,6 @@ def plot(country="Germany"):
     curve_fit, x, country_data, country_data_deaths, country_data_recovered = get_and_fit(country)
     curve_fit_, x_, country_data_, country_data_deaths_, country_data_recovered_ = get_and_fit(country,
                                                                                                subtract_inactive=True)
-
 
     inhabitants = get_inhabitants(country)
 
