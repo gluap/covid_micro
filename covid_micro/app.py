@@ -91,7 +91,7 @@ def get_latest(country):
         latest_data = [i for i in latest['features'] if
                        i['attributes']["Country_Region"] == country]
     except KeyError:
-        return dict(deaths="Unknown (upstream api overloaded)", cases="Unknown (upstream aoi overloaded)",
+        return dict(active="unknown", deaths="Unknown (upstream api overloaded)", cases="Unknown (upstream aoi overloaded)",
                     recovered="Unknown (upstream api overloaded)", timestamp=datetime.datetime.now(), error=True)
     latest_sum = {}
     for entry in latest_data:
@@ -107,22 +107,24 @@ def get_latest(country):
     latest_data = latest_sum
     try:
         latest_timestamp = datetime.datetime.fromtimestamp(latest_data['Last_Update'] / 1000)
-        latest_cases = latest_data['Confirmed']
-        latest_deaths = latest_data['Deaths']
-        latest_recovered = latest_data['Recovered']
+        latest_cases = int(latest_data['Confirmed'])
+        latest_deaths = int(latest_data['Deaths'])
+        latest_recovered = int(latest_data['Recovered'])
+        latest_active = latest_cases - latest_deaths -latest_recovered
         latest_error = False
     except KeyError:
         latest_timestamp = datetime.datetime.now()
         latest_cases = "Upstream API timestamp missing"
         latest_deaths = "Upstream API timestamp missing"
         latest_recovered = "Upstream API timestamp missing"
+        latest_active = "Upstream API timestamp missing"
         latest_error = True
     #    latest_cases = latest_data['Confirmed']
     #    latest_deaths = latest_data['Deaths']
     #    latest_recovered = latest_data['Recovered']
     latest_timestamp = tsfixer.find_timestamp(TSTuple(country, latest_cases, latest_deaths), latest_timestamp)
     return dict(deaths=latest_deaths, cases=latest_cases, recovered=latest_recovered, timestamp=latest_timestamp,
-                error=latest_error)
+                error=latest_error, active=latest_active)
 
 
 def predictions(country="Germany"):

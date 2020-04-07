@@ -123,11 +123,7 @@ HTML = """
 <b>100k infections on</b> {date100k}<BR/>
 <b>1M infections on</b> {date1m}<BR/>
 <b>deaths/confirmed cases:</b> {deaths_per_confirmed}<BR/></P>
-latest upstream has timestamp {timestamp}: <BR/><B>cases:</B> {cases}<BR/><B>deaths:</B> {deaths}<BR/>
-FAQ: The number of cases for every date is plotted at 24:00pm of that date. The black + indicates current-day values.
-they are shown at their indicated timestamp but have some margin of error both in time and in number. For some countries
-it can be better to only look at the "non-black" dots. 
-<br/>Why are these doubling times smaller than reported elsewhere? many sources count the number of days the last doubling took. that means they are less sensitive to the current rate than both methods used here.<br/>
+latest upstream has timestamp {timestamp}: <BR/><B>cases (active): </B>{cases} ({active})<B> deaths:</B> {deaths} <B>recovered: </B>{recovered}<BR/>
 <BR><IMG SRC="{country}_timeseries.svg"><IMG SRC="{country}_doublingtime.svg">
 <IMG SRC="{country}_deathrate_shifted.svg">
 <IMG SRC="{country}_death_per_confirmed.svg"><IMG SRC="{country}_daily_infected.svg">
@@ -163,6 +159,9 @@ a very early stage of the epidemic (because it takes some time for the diesease 
 nobody is dead but there are already infected)..
 A high number of deaths/detected case indicates either an overloaded health care system at least in sections
 of a country or a low testing rate.</P>
+
+FAQ: The number of cases for every date is plotted at 24:00pm of that date. The black + indicates current-day values. they are shown at their indicated timestamp but have some margin of error both in time and in number. For some countries it can be better to only look at the "non-black" dots. <br/>Why are these doubling times smaller than reported elsewhere? many sources count the number of days the last doubling took. that means they are less sensitive to the current rate than both methods used here.<br/>
+
 
 <a href="https://github.com/gluap/covid_micro">Github repo</a>
 </body>
