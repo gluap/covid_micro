@@ -117,20 +117,16 @@ HTML = """
 </head>
 <body>
 <h1>{country}</h1><BR/>
-<A HREF="index.html">list of countries</A>
-<P><b>Doubling time (5 days via fit):</b> {t2} Days ({t2_full} for active cases)<BR/>
+<A HREF="index.html">list of countries</A><BR/>
+<b>Doubling time (5 days via fit):</b> {t2} Days ({t2_full} for active cases)<BR/>
 <b>Doubling time (2 days via increase): </b>{t2_direct} Days ({t2_full_direct} for active cases) <BR/>
-<b>100k infections on</b> {date100k}<BR/>
-<b>1M infections on</b> {date1m}<BR/>
-<b>deaths/confirmed cases:</b> {deaths_per_confirmed}<BR/></P>
-latest upstream has timestamp {timestamp}: <BR/><B>cases:</B> {cases}<BR/><B>deaths:</B> {deaths}<BR/>
-FAQ: The number of cases for every date is plotted at 24:00pm of that date. The black + indicates current-day values.
-they are shown at their indicated timestamp but have some margin of error both in time and in number. For some countries
-it can be better to only look at the "non-black" dots. 
-<br/>Why are these doubling times smaller than reported elsewhere? many sources count the number of days the last doubling took. that means they are less sensitive to the current rate than both methods used here.<br/>
-<BR><IMG SRC="{country}_timeseries.svg"><IMG SRC="{country}_doublingtime.svg">
-<IMG SRC="{country}_deathrate_shifted.svg">
-<IMG SRC="{country}_death_per_confirmed.svg"><IMG SRC="{country}_daily_infected.svg">
+<b>100k infections on</b> {date100k} <b><span style="padding-left:5em">1M infections on</b> {date1m}</span><span style="padding-left:5em"><b>deaths/confirmed cases:</b> {deaths_per_confirmed}</span><BR/>
+<B>timestamp</B> {timestamp}<span style="padding-left:5em"><B>cases (active): </B>{cases} ({active})</span><span style="padding-left:5em"><B>deaths:</B> {deaths}</span><span style="padding-left:5em"><B>recovered: </B>{recovered}</span><BR/>
+<IMG style="vertical-align:top" SRC="{country}_timeseries.svg">
+<IMG style="vertical-align:top" SRC="{country}_doublingtime.svg">
+<IMG style="vertical-align:top" SRC="{country}_deathrate_shifted.svg">
+<IMG style="vertical-align:top" SRC="{country}_death_per_confirmed.svg">
+<IMG style="vertical-align:top" SRC="{country}_daily_infected.svg">
 <P><B>methodology:</B> To evaluate the current doubling time and make the predictions, a linear equation is fit against the logarithm of the five most recent (finished) days of the time
 series data.<BR/>To evaluate the doubling time trend over time, the fit is repeated for chunks of five days.</P>
 
@@ -163,6 +159,9 @@ a very early stage of the epidemic (because it takes some time for the diesease 
 nobody is dead but there are already infected)..
 A high number of deaths/detected case indicates either an overloaded health care system at least in sections
 of a country or a low testing rate.</P>
+
+FAQ: The number of cases for every date is plotted at 24:00pm of that date. The black + indicates current-day values. they are shown at their indicated timestamp but have some margin of error both in time and in number. For some countries it can be better to only look at the "non-black" dots. <br/>Why are these doubling times smaller than reported elsewhere? many sources count the number of days the last doubling took. that means they are less sensitive to the current rate than both methods used here.<br/>
+
 
 <a href="https://github.com/gluap/covid_micro">Github repo</a>
 </body>
