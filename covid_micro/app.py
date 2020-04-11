@@ -331,6 +331,14 @@ def plot_doublingtime_estimates(country):
         ax.legend(loc=2)
         ax3.legend(loc="lower left")
         ax4.legend(loc="lower left")
+        tmp = sorted(abs(np.array(times3)))
+        mn = 3 * np.mean(tmp)
+        co = tmp[-3]
+        mx = max(co, mn)
+        lims = (-mx, mx)
+        ax.set_ylim(lims)
+        ax2.set_ylim(lims)
+
 
     else:
         ax.text(0, 1, "Not enough data")
