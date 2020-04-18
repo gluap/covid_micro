@@ -254,7 +254,7 @@ HTML_KREIS = """
 <B>Fälle:</B> {count}
 <B>davon genesen:</B> {recovered}
 <B>verstorben:</B> {dead}
-<B>active:</B> {active}
+<B>active:</B> {active}<BR/>
 <IMG style="vertical-align:top" SRC="{kreis}.svg">
 </body>
 </html>
