@@ -5,3 +5,5 @@ nohup.out
 timestamp_cache
 .pytest-cache
 htmlcov
+.idea
+**.pyc
