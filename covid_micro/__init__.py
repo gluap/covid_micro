@@ -127,7 +127,7 @@ def create_app():
         kreise = number_by_name.keys()
 
         return Response(
-            HTML_COUNTRIES.format(countries="<LI>".join([f'<a href="{c}">{c}</a>' for c in sorted(kreise)])))
+            HTML_KREISE.format(kreise="<LI>".join([f'<a href="{c}">{c}</a>' for c in sorted(kreise)])))
 
     return app
 
@@ -255,7 +255,10 @@ HTML_KREIS = """
 <B>davon genesen:</B> {recovered}
 <B>verstorben:</B> {dead}
 <B>active:</B> {active}<BR/>
-<IMG style="vertical-align:top" SRC="{kreis}.svg">
+<IMG style="vertical-align:top" SRC="{kreis}.svg"><BR/>
+<B>Quelle:</B> Die ZEIT.<BR/>
+Da Genesungen nicht Meldepflichtig sind, werden diese teilweise gar nicht, oft auch nicht jeden Tag
+erfasst, was dazu führt, dass teilweise die Darstellung der kumulativen genesenen Fälle sehr stufig daher kommt.
 </body>
 </html>
 """
