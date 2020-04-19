@@ -461,7 +461,7 @@ def get_inhabitants(country, fallback=None):
     if country in COUNTRY_MAPPING:
         country = COUNTRY_MAPPING[country]
     try:
-        res = get_cached(f"https://restcountries.eu/rest/v2/name/{country}").json()
+        res = get_cached(f"https://restcountries.eu/rest/v2/name/{country}", timeout=10000).json()
         if len(res) == 1:
             return int(res[0]["population"])
         else:
