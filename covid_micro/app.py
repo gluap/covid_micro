@@ -63,7 +63,7 @@ class ExtraDataError(Exception):
     pass
 
 
-def get_cached(url, cache={}):
+def get_cached(url, timeout=15, cache={}):
     if url in cache:
         if datetime.datetime.now() - cache[url]['timestamp'] <= datetime.timedelta(minutes=15):
             return cache[url]['data']
@@ -91,7 +91,8 @@ def get_latest(country):
         latest_data = [i for i in latest['features'] if
                        i['attributes']["Country_Region"] == country]
     except KeyError:
-        return dict(active="unknown", deaths="Unknown (upstream api overloaded)", cases="Unknown (upstream aoi overloaded)",
+        return dict(active="unknown", deaths="Unknown (upstream api overloaded)",
+                    cases="Unknown (upstream aoi overloaded)",
                     recovered="Unknown (upstream api overloaded)", timestamp=datetime.datetime.now(), error=True)
     latest_sum = {}
     for entry in latest_data:
@@ -110,7 +111,7 @@ def get_latest(country):
         latest_cases = int(latest_data['Confirmed'])
         latest_deaths = int(latest_data['Deaths'])
         latest_recovered = int(latest_data['Recovered'])
-        latest_active = latest_cases - latest_deaths -latest_recovered
+        latest_active = latest_cases - latest_deaths - latest_recovered
         latest_error = False
     except KeyError:
         latest_timestamp = datetime.datetime.now()
@@ -241,10 +242,32 @@ def get_timeseries_from_url(country, url):
     #        all_country_data = [d[4:] for d in data if country in d and "," in d[0]]
     #        all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
     #    else:
+    country_data = summarize_countrydata(country, data)
+    return country_data, data
+
+
+def summarize_countrydata(country, data):
     all_country_data = [d[4:] for d in data if country in d]
     all_country_data_numeric = np.array([[int(d) for d in c] for c in all_country_data])
     country_data = np.sum(all_country_data_numeric, 0)
-    return country_data, data
+    return country_data
+
+
+def rich_country_list():
+    cases_raw = get_cached(URL_TIMESERIES_CONFIRMED).content
+    deaths_raw = get_cached(URL_TIMESERIES_DEATHS).content
+    recovered_raw = get_cached(URL_TIMESERIES_RECOVERED).content
+    full_cases = list(csv.reader(StringIO(cases_raw.decode("utf-8"))))
+    full_deaths = list(csv.reader(StringIO(deaths_raw.decode("utf-8"))))
+    full_recovered = list(csv.reader(StringIO(recovered_raw.decode("utf-8"))))
+    cases = {row[1]: summarize_countrydata(row[1], full_cases)[-1] for row in full_cases[1:]}
+    deaths = {row[1]: summarize_countrydata(row[1], full_deaths)[-1] for row in full_deaths[1:]}
+    recovered = {row[1]: summarize_countrydata(row[1], full_recovered)[-1] for row in full_recovered[1:]}
+    country_data = {country: dict(inhabitants=get_inhabitants(country, fallback=-1),
+                                  cases=cases[country],
+                                  deaths=deaths[country],
+                                  recovered=recovered[country]) for country in cases}
+    return country_data
 
 
 def sliding_window_fit(country, subtract_inactive=False):
@@ -434,21 +457,21 @@ def plot_deaths_per_confirmed(country):
 COUNTRY_MAPPING = {"US": "United States of America", "Korea, South": "Korea (Republic of)"}
 
 
-def get_inhabitants(country):
+def get_inhabitants(country, fallback=None):
     if country in COUNTRY_MAPPING:
         country = COUNTRY_MAPPING[country]
-    res = get_cached(f"https://restcountries.eu/rest/v2/name/{country}").json()
     try:
+        res = get_cached(f"https://restcountries.eu/rest/v2/name/{country}").json()
         if len(res) == 1:
             return int(res[0]["population"])
         else:
             for dataset in res:
                 if dataset['name'] == country:
                     return int(dataset['population'])
-            return None
+            return fallback
 
     except:
-        return None
+        return fallback
 
 
 def get_tld(country):

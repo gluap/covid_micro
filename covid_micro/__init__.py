@@ -5,13 +5,13 @@ from io import StringIO
 
 from flask import Flask, Response
 from flask_apscheduler import APScheduler
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CONFIRMED, \
     plot_doublingtime_estimates, plot_deathrate_vs_detection, plot_deaths_per_confirmed, load_countries, \
-    plot_daily_infected
+    plot_daily_infected, rich_country_list
 from covid_micro.germany import plot_kreis, get_data_by_name, number_by_name
 
-from jinja2 import Environment, PackageLoader, select_autoescape
 env = Environment(
     loader=PackageLoader('covid_micro', 'templates'),
     autoescape=select_autoescape(['html', 'xml'])
@@ -98,6 +98,12 @@ def create_app():
         countries = set([row[1] for row in data])
         return Response(
             HTML_COUNTRIES.format(countries="<LI>".join([f'<a href="{c}">{c}</a>' for c in sorted(countries)])))
+
+    @app.route('/index2.html')
+    def index2():
+        data=rich_country_list()
+        template = env.get_or_select_template("index.jinja")
+        return Response(template.render({'countries': data, "title": "list of countries"}))
 
     @app.route('/<country>.html')
     @app.route('/countries/<country>')
