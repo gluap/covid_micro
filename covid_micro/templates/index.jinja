@@ -23,14 +23,14 @@
             <A href="{{country}}.html">{{country}}</A>
         </td>
         <td>{{(countries[country].cases - countries[country].deaths - countries[country].recovered) }}</td>
-        <td>{{(1000000*(countries[country].cases - countries[country].deaths - countries[country].recovered)/countries[country].inhabitants) | round(4)}}
+        <td>{{(1000000*(countries[country].cases - countries[country].deaths - countries[country].recovered)/countries[country].inhabitants) | round(1)}}
         </td>
         <td>{{countries[country].cases}}</td>
-        <td>{{(1000000*countries[country].cases/countries[country].inhabitants) | round(4)}}</td>
+        <td>{{(1000000*countries[country].cases/countries[country].inhabitants) | round(1)}}</td>
         <td>{{countries[country].deaths}}</td>
-        <td>{{(1000000*countries[country].deaths/countries[country].inhabitants) | round(4)}}</td>
+        <td>{{(1000000*countries[country].deaths/countries[country].inhabitants) | round(1)}}</td>
         <td>{{countries[country].recovered}}</td>
-        <td>{{(1000000*countries[country].recovered/countries[country].inhabitants) | round(4)}}</td>
+        <td>{{(1000000*countries[country].recovered/countries[country].inhabitants) | round(1)}}</td>
     </tr>
     {% endfor %}
 

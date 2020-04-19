@@ -91,7 +91,7 @@ def create_app():
         return Response(cache[country]['data'], mimetype='image/svg+xml')
 
     @app.route('/')
-    @app.route('/index.html')
+    @app.route('/index_old.html')
     def index():
         r = get_cached(URL_TIMESERIES_CONFIRMED).content
         data = [row for row in csv.reader(StringIO(r.decode("utf-8")))]
@@ -99,11 +99,14 @@ def create_app():
         return Response(
             HTML_COUNTRIES.format(countries="<LI>".join([f'<a href="{c}">{c}</a>' for c in sorted(countries)])))
 
-    @app.route('/index2.html')
-    def index2():
-        data=rich_country_list()
-        template = env.get_or_select_template("index.jinja")
-        return Response(template.render({'countries': data, "title": "list of countries"}))
+    @app.route('/index.html')
+    def index2(cache={}):
+        if 'last' not in cache or (cache['last'] - datetime.datetime.now()) > datetime.timedelta(hours=4):
+            data = rich_country_list()
+            template = env.get_or_select_template("index.jinja")
+            cache['data']=template.render({'countries': data, "title": "list of countries"})
+            cache['last']=datetime.datetime.now()
+        return Response(cache['data'])
 
     @app.route('/<country>.html')
     @app.route('/countries/<country>')
