@@ -50,9 +50,6 @@ def create_app():
                                   'timestamp': datetime.datetime.now()}
         return Response(cache[country]['data'], mimetype='image/svg+xml')
 
-    @app.route('/favicon.png')
-    def deliver():
-        return Response(open(os.path.join(os.path.dirname(__file__), "favicon.png"), "rb").read(), mimetype="image/png")
 
     @app.route('/<country>_doublingtime.svg')
     def deliver_plot_doublingtimes(country="Germany", cache={}):
@@ -90,7 +87,6 @@ def create_app():
                               'timestamp': datetime.datetime.now()}
         return Response(cache[country]['data'], mimetype='image/svg+xml')
 
-    @app.route('/')
     @app.route('/index_old.html')
     def index():
         r = get_cached(URL_TIMESERIES_CONFIRMED).content
@@ -99,6 +95,7 @@ def create_app():
         return Response(
             HTML_COUNTRIES.format(countries="<LI>".join([f'<a href="{c}">{c}</a>' for c in sorted(countries)])))
 
+    @app.route('/')
     @app.route('/index.html')
     def index2(cache={}):
         if 'last' not in cache or (cache['last'] - datetime.datetime.now()) > datetime.timedelta(hours=4):
@@ -109,7 +106,7 @@ def create_app():
         return Response(cache['data'])
 
     @app.route('/<country>.html')
-    @app.route('/countries/<country>')
+    @app.route('/<country>')
     def html(country="Germany"):
         try:
             data = predictions(country)
@@ -144,6 +141,11 @@ def create_app():
 
         return Response(
             HTML_KREISE.format(kreise="<LI>".join([f'<a href="{c}">{c}</a>' for c in sorted(kreise)])))
+
+    @app.route('/favicon.png')
+    def deliver():
+        return Response(open(os.path.join(os.path.dirname(__file__), "favicon.png"), "rb").read(), mimetype="image/png")
+
 
     return app
 
