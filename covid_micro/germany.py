@@ -852,6 +852,9 @@ def plot_kreis(name):
     fig, axes = matplotlib.pyplot.subplots(nrows=2, ncols=1, sharex=True, sharey=True, figsize=(5, 5), dpi=300)
 
     ax, ax1 = axes
+    ax3 = ax1.twinx()
+    ax2 = ax.twinx()
+
     # ax.plot(x, deaths, "b.", label="deaths/confirmed cases")
     ax.bar(x, reported, color="red", label="reported")
     ax.bar(x, recovered, color="green", label="recovered")
@@ -863,13 +866,19 @@ def plot_kreis(name):
     ax1.legend(loc=2)
     ax.legend(loc=2)
 
-    fig.suptitle(name)
-
-    ax.set_ylabel(f"values")
+    ax.set_ylabel(f"cases")
+    ax2.set_ylabel("cases")
     matplotlib.pyplot.setp(ax1.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
+
+
+    ax2.set_ylim((i*1.0 / kreis_data['population'] * 100000 for i in ax.get_ylim()))
+    ax3.set_ylim((i*1.0 / kreis_data['population'] * 100000 for i in ax1.get_ylim()))
+    ax2.set_ylabel("per 100k")
+    ax3.set_ylabel("per 100k")
 
     bio = BytesIO()
     FigureCanvas(fig)
+    fig.tight_layout()
     fig.savefig(bio, format="svg")
     matplotlib.pyplot.close(fig)
     return bio.getvalue()
