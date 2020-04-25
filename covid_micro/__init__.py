@@ -10,7 +10,7 @@ from jinja2 import Environment, PackageLoader, select_autoescape
 from covid_micro.app import plot, predictions, logger, get_cached, URL_TIMESERIES_CONFIRMED, \
     plot_doublingtime_estimates, plot_deathrate_vs_detection, plot_deaths_per_confirmed, load_countries, \
     plot_daily_infected, rich_country_list
-from covid_micro.germany import plot_kreis, get_data_by_name, number_by_name
+from covid_micro.germany import plot_kreis, get_data_by_name, get_current_data
 
 env = Environment(
     loader=PackageLoader('covid_micro', 'templates'),
@@ -49,7 +49,6 @@ def create_app():
                 cache[country] = {'data': plot(country),
                                   'timestamp': datetime.datetime.now()}
         return Response(cache[country]['data'], mimetype='image/svg+xml')
-
 
     @app.route('/<country>_doublingtime.svg')
     def deliver_plot_doublingtimes(country="Germany", cache={}):
@@ -101,8 +100,8 @@ def create_app():
         if 'last' not in cache or (cache['last'] - datetime.datetime.now()) > datetime.timedelta(hours=4):
             data = rich_country_list()
             template = env.get_or_select_template("index.jinja")
-            cache['data']=template.render({'countries': data, "title": "list of countries"})
-            cache['last']=datetime.datetime.now()
+            cache['data'] = template.render({'countries': data, "title": "list of countries"})
+            cache['last'] = datetime.datetime.now()
         return Response(cache['data'])
 
     @app.route('/<country>.html')
@@ -137,15 +136,13 @@ def create_app():
     @app.route('/de/')
     @app.route('/de/index.html')
     def index_de():
-        kreise = number_by_name.keys()
-
-        return Response(
-            HTML_KREISE.format(kreise="<LI>".join([f'<a href="{c}">{c}</a>' for c in sorted(kreise)])))
+        kreise = get_current_data()
+        template = env.get_or_select_template("index_de.jinja")
+        return Response(template.render(kreise=kreise, title="Landkreise"), mimetype='text/html')
 
     @app.route('/favicon.png')
     def deliver():
         return Response(open(os.path.join(os.path.dirname(__file__), "favicon.png"), "rb").read(), mimetype="image/png")
-
 
     return app
 

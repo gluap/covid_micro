@@ -1,0 +1,39 @@
+{% extends "base.jinja" %}
+{% block content %}
+<H1>Landkreise</H1>
+<table data-toggle="table" class="table-sm table-striped table-hover table" data-search="true">
+    <thead>
+    <tr>
+        <th data-sortable="true">Country</th>
+        <th data-sortable="true" data-align="right">Active</th>
+        <th data-sortable="true" data-align="right">Active/(1M ppl)</th>
+        <th data-sortable="true" data-align="right">Cases</th>
+        <th data-sortable="true" data-align="right">Cases/(1M ppl)</th>
+        <th data-sortable="true" data-align="right">Deaths</th>
+        <th data-sortable="true" data-align="right">Deaths/(1M ppl)</th>
+        <th data-sortable="true" data-align="right">Recovered</th>
+        <th data-sortable="true" data-align="right">Recovered/(1M ppl)</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for kreis in kreise %}
+    <tr>
+        <td>
+            <A href="{{kreis}}.html">{{kreis}}</A>
+        </td>
+        <td>{{kreise[kreis].active}}</td>
+        <td>{{(1000000*kreise[kreis].active/kreise[kreis].population) | round(1)}}
+        </td>
+        <td>{{kreise[kreis].count}}</td>
+        <td>{{(1000000*kreise[kreis].count/kreise[kreis].population) | round(1)}}</td>
+        <td>{{kreise[kreis].dead}}</td>
+        <td>{{(1000000*kreise[kreis].dead/kreise[kreis].population) | round(1)}}</td>
+        <td>{{kreise[kreis].recovered}}</td>
+        <td>{{(1000000*kreise[kreis].recovered/kreise[kreis].population) | round(1)}}</td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+Quelle: Die Zeit
+{% endblock %}

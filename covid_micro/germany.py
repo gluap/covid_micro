@@ -817,6 +817,7 @@ zeit_kreise_key = {"1001": {"ags": "1001", "name": "Flensburg", "lat": 54.785, "
                              "population": 91607, "bundesland": "Thüringen"}}
 
 number_by_name = {j['name']: i for i, j in zeit_kreise_key.items()}
+name_by_number = {i: j['name'] for i, j in zeit_kreise_key.items()}
 
 
 def get_data_by_name(name):
@@ -826,6 +827,13 @@ def get_data_by_name(name):
     limits = {i: datetime.datetime.strptime(j, "%Y-%m-%d") for i, j in kreise['meta']['historicalStats'].items()}
     x = [limits['start'] + datetime.timedelta(days=n) for n in range(0, (limits['end'] - limits['start']).days + 1)]
     return zeit_kreise_key[number_by_name[name]], x, kreise_dict[number_by_name[name]]
+
+
+def get_current_data():
+    kreise = get_cached(ZEIT_KREISE_URL)
+    kreise = kreise.json()['kreise']
+    kreise_dict = {name_by_number[j['ags']]: {**j['currentStats'], **zeit_kreise_key[j['ags']]} for j in kreise['items']}
+    return kreise_dict
 
 
 def propagate_none(list):
@@ -885,6 +893,7 @@ def plot_kreis(name):
 
 
 if __name__ == "__main__":
+    a = get_current_data()
     res = get_cached(ZEIT_KREISE_URL).json()
     print(res)
 
