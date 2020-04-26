@@ -86,14 +86,6 @@ def create_app():
                               'timestamp': datetime.datetime.now()}
         return Response(cache[country]['data'], mimetype='image/svg+xml')
 
-    @app.route('/index_old.html')
-    def index():
-        r = get_cached(URL_TIMESERIES_CONFIRMED).content
-        data = [row for row in csv.reader(StringIO(r.decode("utf-8")))]
-        countries = set([row[1] for row in data])
-        return Response(
-            HTML_COUNTRIES.format(countries="<LI>".join([f'<a href="{c}">{c}</a>' for c in sorted(countries)])))
-
     @app.route('/')
     @app.route('/index.html')
     def index2(cache={}):
@@ -146,24 +138,6 @@ def create_app():
 
     return app
 
-
-HTML_COUNTRIES = """
-<html>
-<head profile="http://www.w3.org/2005/10/profile">
-<link rel="icon" 
-      type="image/png" 
-      href="favicon.png">
-
-<title>List of Countries</title>
-</head><Body>
-<H1>List of countries</H1>
-Caveat: Not all countries have enough data for a meaningful plot, but most larger developed nations sadly do.
-<ul>
-<LI/>{countries}
-</ul>
-</body>
-</html>
-"""
 ERROR = """
 <html>
 <head profile="http://www.w3.org/2005/10/profile">
@@ -176,22 +150,6 @@ ERROR = """
 There was a problem fetching {country}. {exception}
 </body>
 </html>"""
-
-HTML_KREISE = """
-<HTML>
-<head profile="http://www.w3.org/2005/10/profile">
-<link rel="icon" 
-      type="image/png" 
-      href="favicon.png">
-
-<title>Landkreise</title>
-</head><Body>
-<ul>
-<LI/>{kreise}
-</ul>
-</body>
-</html>
-"""
 
 HTML_KREIS = """
 <HTML>
