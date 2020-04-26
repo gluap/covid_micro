@@ -832,7 +832,8 @@ def get_data_by_name(name):
 def get_current_data():
     kreise = get_cached(ZEIT_KREISE_URL)
     kreise = kreise.json()['kreise']
-    kreise_dict = {name_by_number[j['ags']]: {**j['currentStats'], **zeit_kreise_key[j['ags']]} for j in kreise['items']}
+    kreise_dict = {name_by_number[j['ags']]: {**j['currentStats'], **zeit_kreise_key[j['ags']]} for j in
+                   kreise['items']}
     return kreise_dict
 
 
@@ -852,9 +853,21 @@ def plot_kreis(name):
     fig = matplotlib.pyplot.figure(dpi=300)
     ax = fig.add_subplot()
 
-    reported = np.array(list(propagate_none(kreise_dict['historicalStats']['count'])))
-    recovered = np.array(list(propagate_none(kreise_dict['historicalStats']['recovered'])))
-    deaths = np.array(list(propagate_none(kreise_dict['historicalStats']['dead'])))
+    reported = list(propagate_none(kreise_dict['historicalStats']['count']))
+    recovered = list(propagate_none(kreise_dict['historicalStats']['recovered']))
+    deaths = list(propagate_none(kreise_dict['historicalStats']['dead']))
+    longest = max([len(reported), len(recovered), len(deaths)])
+    while longest > len(reported):
+        reported.append(reported[-1])
+    while longest > len(recovered):
+        recovered.append(recovered[-1])
+    while longest > len(deaths):
+        deaths.append(deaths[-1])
+
+    reported = np.array(reported)
+    recovered = np.array(recovered)
+    deaths = np.array(deaths)
+
     active = reported - recovered - deaths
 
     fig, axes = matplotlib.pyplot.subplots(nrows=2, ncols=1, sharex=True, sharey=True, figsize=(5, 5), dpi=300)
@@ -868,7 +881,7 @@ def plot_kreis(name):
     ax.bar(x, recovered, color="green", label="recovered")
     ax.bar(x, deaths, color="black", label="deaths")
 
-    ax.set_xlim((x[30], x[-1]))
+    ax.set_xlim((x[30], x[-1]+datetime.timedelta(days=1)))
 
     ax1.bar(x, active, label="active cases")
     ax1.legend(loc=2)
@@ -878,9 +891,8 @@ def plot_kreis(name):
     ax2.set_ylabel("cases")
     matplotlib.pyplot.setp(ax1.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
 
-
-    ax2.set_ylim((i*1.0 / kreis_data['population'] * 100000 for i in ax.get_ylim()))
-    ax3.set_ylim((i*1.0 / kreis_data['population'] * 100000 for i in ax1.get_ylim()))
+    ax2.set_ylim((i * 1.0 / kreis_data['population'] * 100000 for i in ax.get_ylim()))
+    ax3.set_ylim((i * 1.0 / kreis_data['population'] * 100000 for i in ax1.get_ylim()))
     ax2.set_ylabel("per 100k")
     ax3.set_ylabel("per 100k")
 

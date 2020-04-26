@@ -19,7 +19,7 @@
     {% for kreis in kreise %}
     <tr>
         <td>
-            <A href="{{kreis}}.html">{{kreis}}</A>
+            <A href="{{kreis}}">{{kreis}}</A>
         </td>
         <td>{{kreise[kreis].active}}</td>
         <td>{{(1000000*kreise[kreis].active/kreise[kreis].population) | round(1)}}
