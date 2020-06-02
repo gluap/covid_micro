@@ -878,7 +878,7 @@ def plot_kreis(name):
 
     # ax.plot(x, deaths, "b.", label="deaths/confirmed cases")
     ax.bar(x, reported, color="red", label="reported")
-    ax.bar(x, recovered, color="green", label="recovered")
+    ax.bar(x, recovered, color="green", bottom=deaths, label="recovered")
     ax.bar(x, deaths, color="black", label="deaths")
 
     ax.set_xlim((x[30], x[-1]+datetime.timedelta(days=1)))
