@@ -1,10 +1,14 @@
 {% extends "base.jinja" %}
 {% block content %}
+
+
 <H1>Landkreise</H1>
 <table data-toggle="table" class="table-sm table-striped table-hover table" data-search="true">
     <thead>
     <tr>
         <th data-sortable="true">Country</th>
+        <th data-sortable="true" data-align="right">New cases/week/100k</th>
+        <th data-sortable="true" data-align="right">recoveries/week/100k</th>
         <th data-sortable="true" data-align="right">Active</th>
         <th data-sortable="true" data-align="right">Active/(1M ppl)</th>
         <th data-sortable="true" data-align="right">Cases</th>
@@ -21,6 +25,8 @@
         <td>
             <A href="{{kreis}}">{{kreis}}</A>
         </td>
+        <td>{{kreise[kreis].week_new | round(1)}}</td>
+        <td>{{kreise[kreis].week_recovered | round(1)}}</td>
         <td>{{kreise[kreis].active}}</td>
         <td>{{(1000000*kreise[kreis].active/kreise[kreis].population) | round(1)}}
         </td>
