@@ -517,7 +517,7 @@ def plot_kreis(name):
                 barcolors.append(color)
                 break
 
-    ax1.bar(x_inzidenz, inzidenz, color=barcolors)
+    ax1.bar(x_inzidenz, inzidenz, color=barcolors, label="Inzidenz")
         #ax1.fill_between([min(x),max(x)],[l[0],l[0]],[l[1],l[1]],color=color)
 
 
