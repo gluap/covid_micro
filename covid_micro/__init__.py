@@ -169,8 +169,12 @@ HTML_KREIS = """
 <B>active:</B> {active}<BR/>
 <IMG style="vertical-align:top" SRC="{kreis}.svg"><BR/>
 <B>Quelle:</B> Die ZEIT.<BR/>
-Da Genesungen nicht Meldepflichtig sind, werden diese teilweise gar nicht, oft auch nicht jeden Tag
-erfasst, was dazu führt, dass teilweise die Darstellung der kumulativen genesenen Fälle sehr stufig daher kommt.
+Die Inzidenzen sind entsprechend entsprechend den Schwellwerten des Bundes und in Spezialfällen
+entsprechend denen des jeweiligen Bundeslandes eingefärbt, wenn das Bundesland Schwellwerte anhand der Inzidenzen festlegt. 
+
+Derzeit sind die Schwellwerte für Hessen und Bayern entsprechend der lokalen Verordnungen eingefärbt.
+dict(Hessen= {(0,20):"green", (20,35): "yellow", (35,50): "orange", (50,75):"red", (75,10000):"darkred"},
+              Bayern={(0,35): "green", (35,10000):"red"})
 </body>
 </html>
 """
