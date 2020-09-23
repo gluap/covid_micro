@@ -174,7 +174,7 @@ entsprechend denen des jeweiligen Bundeslandes eingefärbt, wenn das Bundesland 
 
 Derzeit sind die Schwellwerte für Hessen und Bayern entsprechend der lokalen Verordnungen eingefärbt.
 Hessen= (0,20):"green", (20,35): "yellow", (35,50): "orange", (50,75):"red", (75,10000):"darkred"
-Bayern={(0,35): "green", (35,10000):"red"
+Bayern= (0,35): "green", (35,10000):"red"
 </body>
 </html>
 """
