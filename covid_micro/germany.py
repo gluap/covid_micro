@@ -494,12 +494,11 @@ def plot_kreis(name):
     ax.set_xlim((x[30], x[-1] + datetime.timedelta(days=1)))
 
 
-    ax1.legend(loc=2)
-    ax.legend(loc=2)
+
 
     ax.set_ylabel(f"cases")
     ax2.set_ylabel("cases")
-    ax1.set_ylim(0, max(inzidenz))
+    ax1.set_ylim(0, max(inzidenz)+0.2*max(inzidenz))
     ax.set_ylim(0, max(reported))
     matplotlib.pyplot.setp(ax1.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
 
@@ -520,6 +519,8 @@ def plot_kreis(name):
     ax1.bar(x_inzidenz, inzidenz, color=barcolors, label="Inzidenz")
         #ax1.fill_between([min(x),max(x)],[l[0],l[0]],[l[1],l[1]],color=color)
 
+    ax1.legend(loc=2)
+    ax.legend(loc=2)
 
     bio = BytesIO()
     FigureCanvas(fig)
