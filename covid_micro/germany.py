@@ -514,6 +514,7 @@ def plot_kreis(name):
         for l,color in limits.items():
             if l[0]<=i and l[1]>i:
                 barcolors.append(color)
+                ax1.axhline(l[0], color=color, alpha=0.5, linestyle="--")
                 break
 
     ax1.bar(x_inzidenz, inzidenz, color=barcolors, label="Inzidenz")
