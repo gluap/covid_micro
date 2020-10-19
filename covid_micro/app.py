@@ -425,7 +425,6 @@ def plot_deathrate_vs_detection(country):
     matplotlib.pyplot.close(fig)
     return bio.getvalue()
 
-
 def plot_deaths_per_confirmed(country):
     country_data_deaths, country_data_recovered, country_data, log_y_data, x, x_data = timeseries_data(country)
 
@@ -433,9 +432,10 @@ def plot_deaths_per_confirmed(country):
     fig = matplotlib.pyplot.figure(dpi=300)
     ax = fig.add_subplot()
 
-    ax.plot(x, country_data_deaths / country_data, "b.", label="deaths/confirmed cases")
+    ax.plot(x[7+15:], (country_data_deaths[15+7:]-country_data_deaths[15:-7]) / (country_data[7:-15]-country_data[:-7-15]), "b.",
+            label="deaths in 7d (now)/ newly infected in 7d (15 days ago)")
 
-    ax.plot(x[-1:], country_data_deaths[-1:] / country_data[-1:], marker="+", color="black")
+    #ax.plot(x[-1:], country_data_deaths[-1:] / country_data[-1:], marker="+", color="black")
     matplotlib.pyplot.setp(ax.get_xticklabels(), rotation=25, ha="right", rotation_mode="anchor")
     ax.grid(True, which="major")
     ax.grid(True, which="minor", linewidth=0.5)
@@ -444,6 +444,7 @@ def plot_deaths_per_confirmed(country):
     ax.legend(loc=2)
 
     ax.set_xlim((x[0], x[-1]))
+    ax.set_ylim((0,0.2))
 
     ax.set_ylabel(f"deaths / confirmed cases")
 
