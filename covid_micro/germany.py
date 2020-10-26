@@ -507,7 +507,7 @@ def plot_kreis(name, days=None):
     ax1.set_ylabel("cases/100k/week")
 
     if days is not None:
-        ax.set_xlim((datetime.datetime.now()-datetime.timedelta(days=15), datetime.datetime.now()))
+        ax.set_xlim((datetime.datetime.now()-datetime.timedelta(days=days), datetime.datetime.now()))
 
     limits = {(0,50): "green", (50,1000): "red"}
     if kreis_data['bundesland'] in incidence_limits:

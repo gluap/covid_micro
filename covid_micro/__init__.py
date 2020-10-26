@@ -115,6 +115,14 @@ def create_app():
                             'timestamp': datetime.datetime.now()}
         return Response(cache[kreis]['data'], mimetype='image/svg+xml')
 
+    @app.route('/de/<days>/<kreis>.svg')
+    def plotout_kreis_zoomed(days=None, kreis="Darmstadt",  cache={}):
+
+        if kreis not in cache or (
+                datetime.datetime.now() - cache[kreis]['timestamp'] > datetime.timedelta(minutes=15)):
+            cache[kreis] = {'data': (plot_kreis(kreis, days=int(days))),
+                            'timestamp': datetime.datetime.now()}
+        return Response(cache[kreis]['data'], mimetype='image/svg+xml')
 
     @app.route('/de/<kreis>')
     def html_kreis(kreis="Darmstadt"):
