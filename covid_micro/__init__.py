@@ -115,6 +115,7 @@ def create_app():
                             'timestamp': datetime.datetime.now()}
         return Response(cache[kreis]['data'], mimetype='image/svg+xml')
 
+
     @app.route('/de/<kreis>')
     def html_kreis(kreis="Darmstadt"):
         try:

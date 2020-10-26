@@ -458,7 +458,7 @@ def propagate_none(list):
             yield i
 
 
-def plot_kreis(name):
+def plot_kreis(name, days=None):
     kreis_data, x, kreise_dict = get_data_by_name(name)
     # fig = matplotlib.pyplot.figure(figsize=(5, 5), dpi=300)
     fig = matplotlib.pyplot.figure(dpi=300)
@@ -505,6 +505,9 @@ def plot_kreis(name):
     ax2.set_ylim((i * 1.0 / kreis_data['population'] * 100000 for i in ax.get_ylim()))
     ax2.set_ylabel("cases/100k")
     ax1.set_ylabel("cases/100k/week")
+
+    if days is not None:
+        ax.set_xlim((datetime.datetime.now()-datetime.timedelta(days=15), datetime.datetime.now()))
 
     limits = {(0,50): "green", (50,1000): "red"}
     if kreis_data['bundesland'] in incidence_limits:
