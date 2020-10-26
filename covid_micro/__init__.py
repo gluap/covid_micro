@@ -176,7 +176,7 @@ HTML_KREIS = """
 <B>davon genesen:</B> {recovered}
 <B>verstorben:</B> {dead}
 <B>active:</B> {active}<BR/>
-<IMG style="vertical-align:top" SRC="{kreis}.svg"><BR/>
+<IMG style="vertical-align:top" SRC="{kreis}.svg"><IMG style="vertical-align:top" SRC="20/{kreis}.svg"><BR/>
 <B>Quelle:</B> Die ZEIT.<BR/>
 Die Inzidenzen sind entsprechend entsprechend den Schwellwerten des Bundes und in Spezialfällen
 entsprechend denen des jeweiligen Bundeslandes eingefärbt, wenn das Bundesland Schwellwerte anhand der Inzidenzen festlegt. 
